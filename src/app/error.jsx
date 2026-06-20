@@ -1,6 +1,7 @@
 'use client'; // Error components must be Client Components
 
 import { useEffect } from 'react';
+import { RefreshCw } from 'lucide-react';
 
 export default function Error({ error, reset }) {
   useEffect(() => {
@@ -27,9 +28,10 @@ export default function Error({ error, reset }) {
 
         <button
           onClick={() => reset()}
-          className="mt-8 rounded-lg border border-purple-500/30 bg-purple-500/10 px-6 py-2.5 text-sm font-medium text-purple-300 transition-all duration-300 hover:border-purple-500/60 hover:bg-purple-500/20 hover:shadow-[0_0_20px_rgba(147,51,234,0.3)]"
+          className="flex justify-center items-center gap-2 mt-8 rounded-lg border border-purple-500/30 bg-purple-500/10 px-6 py-2.5 text-sm font-medium text-purple-300 transition-all duration-300 hover:border-purple-500/60 hover:bg-purple-500/20 hover:shadow-[0_0_20px_rgba(147,51,234,0.3)]"
         >
-          Re-run Code
+          <div><RefreshCw size={16}/></div>
+          <div>Re-run Code</div>
         </button>
       </div>
     </div>
