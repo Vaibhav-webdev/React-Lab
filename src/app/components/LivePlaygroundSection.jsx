@@ -102,7 +102,7 @@ export const styles = StyleSheet.create({
     };
 
     return (
-        <section id="how-it-works" className="bg-[#060608] text-white py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <section id="how-it-works" className="bg-[#060608] text-white py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
 
                 {/* Left Content Column */}

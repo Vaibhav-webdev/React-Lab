@@ -10,7 +10,7 @@ const CallToAction = () => {
         <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
         {/* Left Side: Graphic/Icon */}
-        <div className="relative flex-shrink-0 flex justify-center items-center">
+        <div className="relative flex-shrink-0 flex justify-center items-center mt-8 lg:mt-0">
           {/* Outer glowing border/shape */}
           <div className="relative w-48 h-48 md:w-64 md:h-64 flex items-center justify-center">
              {/* Decorative lines (Reticle style) */}
@@ -38,7 +38,7 @@ const CallToAction = () => {
           </p>
           
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-5 tracking-tight leading-tight">
-            Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">React</span> journey<br className="hidden md:block" /> starts now.
+            Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">React Native</span> journey<br className="hidden md:block" /> starts now.
           </h2>
           
           <p className="text-gray-400 text-base md:text-lg mb-8 max-w-md mx-auto md:mx-0">

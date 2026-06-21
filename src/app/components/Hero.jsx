@@ -27,7 +27,7 @@ const INDIGO = '#7c3aed';
 
 export default function Hero() {
     return (
-        <section id="home" className="relative w-full bg-[#060608] text-white overflow-hidden flex flex-col justify-center pt-18 pb-12">
+        <section id="home" className="relative w-full bg-[#060608] text-white overflow-hidden flex flex-col justify-center pt-10 lg:pt-18 pb-12 px-10 lg:px-0">
             {/* Background Ambient Glows for Performance (CSS instead of Heavy Images) */}
             <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[20%] right-[-10%] w-[600px] h-[600px] bg-indigo-900/15 rounded-full blur-[150px] pointer-events-none" />
@@ -55,7 +55,7 @@ export default function Hero() {
                         className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1]"
                     >
                         Master <span className="bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">React.</span> <br />
-                        <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">Build anything.</span>
+                        <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent"><span className="bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">Native</span> Build anything.</span>
                     </h1>
 
                     {/* Subtitle Description */}
@@ -63,7 +63,7 @@ export default function Hero() {
                         variants={fadeInUp}
                         className="text-zinc-400 text-lg sm:text-xl max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed"
                     >
-                        Stop watching endless tutorials. Dive straight into a production-ready Next.js environment where you master the App Router, Server Components, and API routes by writing real code. Our zero-setup, in-browser IDE lets you build, debug, and deploy.
+                        Stop watching endless tutorials. Dive straight into a production-ready React Native where you master the Expo Router, Native Components, and Device APIs by writing real code. Our zero-setup, in-browser mobile emulator and IDE lets you build, debug, and deploy real apps instantly.
                     </p>
 
                     {/* Action Buttons with Hover Effects */}

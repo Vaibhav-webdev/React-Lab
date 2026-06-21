@@ -19,7 +19,7 @@ const Navbar = () => {
     // Semantic <nav> tag for SEO and Accessibility
     <nav className="bg-[#0d0e12] border-b border-gray-800 top-0 sticky z-50" aria-label="Main Navigation">
       <div className="max-w-7xl mx-auto lg:px-4">
-        <div className="flex justify-between items-center h-20 px-10">
+        <div className="flex justify-between items-center h-20 px-6 lg:px-10">
 
           {/* Logo Section */}
           <div className="shrink-0 flex items-center">
