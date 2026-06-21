@@ -52,7 +52,7 @@ export default function Hero() {
                     {/* Main Heading (SEO Optimized with H1) */}
                     <h1
                         variants={fadeInUp}
-                        className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1]"
+                        className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1]"
                     >
                         Master <span className="bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">React.</span> <br />
                         <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent"><span className="bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">Native</span> Build anything.</span>
