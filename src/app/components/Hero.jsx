@@ -27,7 +27,7 @@ const INDIGO = '#7c3aed';
 
 export default function Hero() {
     return (
-        <section id="home" className="relative w-full bg-[#060608] text-white overflow-hidden flex flex-col justify-center pt-10 lg:pt-18 pb-12 px-10 lg:px-0">
+        <section id="home" className="relative w-full bg-[#060608] text-white overflow-hidden flex flex-col justify-center pt-10 lg:pt-18 pb-12 px-4 lg:px-0">
             {/* Background Ambient Glows for Performance (CSS instead of Heavy Images) */}
             <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[20%] right-[-10%] w-[600px] h-[600px] bg-indigo-900/15 rounded-full blur-[150px] pointer-events-none" />
