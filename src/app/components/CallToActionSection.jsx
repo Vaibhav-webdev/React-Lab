@@ -38,7 +38,7 @@ const CallToAction = () => {
           </p>
           
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-5 tracking-tight leading-tight">
-            Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">React Native</span> journey<br className="hidden md:block" /> starts now.
+            Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">NextJS</span> journey<br className="hidden md:block" /> starts now.
           </h2>
           
           <p className="text-gray-400 text-base md:text-lg mb-8 max-w-md mx-auto md:mx-0">

@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Sparkles, Terminal, Users, Code, CheckCircle } from "lucide-react";
 
 // Framer Motion Variants for Staggered Fade-in
@@ -26,6 +27,8 @@ const PURPLE = '#a855f7'; // Custom Purple
 const INDIGO = '#7c3aed';
 
 export default function Hero() {
+    const router = useRouter()
+
     return (
         <section id="home" className="relative w-full bg-[#060608] text-white overflow-hidden flex flex-col justify-center pt-10 lg:pt-18 pb-12 px-4 lg:px-0">
             {/* Background Ambient Glows for Performance (CSS instead of Heavy Images) */}
@@ -54,8 +57,8 @@ export default function Hero() {
                         variants={fadeInUp}
                         className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1]"
                     >
-                        Master <span className="bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">React.</span> <br />
-                        <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent"><span className="bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">Native</span> Build anything.</span>
+                        Master <span className="bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">NextJS.</span> <br />
+                        <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">Build anything.</span>
                     </h1>
 
                     {/* Subtitle Description */}
@@ -63,7 +66,7 @@ export default function Hero() {
                         variants={fadeInUp}
                         className="text-zinc-400 text-lg sm:text-xl max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed"
                     >
-                        Stop watching endless tutorials. Dive straight into a production-ready React Native where you master the Expo Router, Native Components, and Device APIs by writing real code. Our zero-setup, in-browser mobile emulator and IDE lets you build, debug, and deploy real apps instantly.
+                        Stop watching endless tutorials. Dive straight into a production-ready Next.js project where you master Server Components, App Router, and API Routes by writing real code. Our zero-setup, in-browser IDE lets you build, debug, and deploy real full-stack web apps instantly.
                     </p>
 
                     {/* Action Buttons with Hover Effects */}
@@ -77,7 +80,9 @@ export default function Hero() {
                             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
                         </button>
 
-                        <button className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800/80 font-semibold text-zinc-300 transition-all duration-200 active:scale-[0.98]">
+                        <button onClick={() => {
+                            router.push('/interview')
+                        }} className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800/80 font-semibold text-zinc-300 transition-all duration-200 active:scale-[0.98]">
                             Try Mock Interview
                         </button>
                     </motion.div>

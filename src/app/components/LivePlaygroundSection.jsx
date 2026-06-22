@@ -131,7 +131,7 @@ export const styles = StyleSheet.create({
                         variants={fadeInUp}
                         className="text-zinc-400 text-base sm:text-lg mb-8 max-w-md leading-relaxed"
                     >
-                        Our in-browser IDE lets you write React code and see results instantly.
+                        Our in-browser IDE lets you write NextJS code and see results instantly.
                     </motion.p>
 
                     {/* Features List */}
@@ -185,22 +185,22 @@ export const styles = StyleSheet.create({
                             {/* Tabs */}
                             <div className="flex items-center space-x-1 bg-zinc-950/40 p-0.5 rounded-md border border-zinc-900">
                                 <button
-                                    onClick={() => setActiveTab("App.jsx")}
-                                    className={`px-3 py-1 rounded font-medium text-[11px] sm:text-xs transition-colors ${activeTab === "App.jsx"
+                                    onClick={() => setActiveTab("page.tsx")}
+                                    className={`px-3 py-1 rounded font-medium text-[11px] sm:text-xs transition-colors ${activeTab === "page.tsx"
                                         ? "bg-[#13151C] text-zinc-200 border border-zinc-800/50"
                                         : "text-zinc-500 hover:text-zinc-400 border border-transparent"
                                         }`}
                                 >
-                                    App.jsx
+                                    page.tsx
                                 </button>
                                 <button
-                                    onClick={() => setActiveTab("styles.js")}
-                                    className={`px-3 py-1 rounded font-medium text-[11px] sm:text-xs transition-colors ${activeTab === "styles.js"
+                                    onClick={() => setActiveTab("globals.css")}
+                                    className={`px-3 py-1 rounded font-medium text-[11px] sm:text-xs transition-colors ${activeTab === "globals.css"
                                         ? "bg-[#13151C] text-zinc-200 border border-zinc-800/50"
                                         : "text-zinc-500 hover:text-zinc-400 border border-transparent"
                                         }`}
                                 >
-                                    styles.js
+                                    globals.css
                                 </button>
                             </div>
 
@@ -220,155 +220,124 @@ export const styles = StyleSheet.create({
                             {/* Code Editor Panel */}
                             <div className="md:col-span-7 p-4 sm:p-5 bg-[#0D0E12] border-b md:border-b-0 md:border-r border-zinc-800/60 overflow-x-auto overflow-y-auto max-w-full max-h-[500px] selection:bg-purple-500/20 relative">
                                 <pre className="text-zinc-400 leading-relaxed font-normal whitespace-pre">
-                                    {activeTab === "App.jsx" ? (
+                                    {activeTab === "page.tsx" ? (
                                         <code className="block animate-in fade-in duration-300">
-                                            <span className="text-purple-400">import</span> React, &#123;{" "}
+                                            <span className="text-green-400">'use client'</span>;
+                                            {"\n\n"}
+                                            <span className="text-purple-400">import</span> &#123;{" "}
                                             <span className="text-blue-400">useState</span> &#125;{" "}
                                             <span className="text-purple-400">from</span>{" "}
                                             <span className="text-green-400">'react'</span>;
-                                            {"\n"}
-                                            <span className="text-purple-400">import</span> &#123;{" "}
-                                            <span className="text-blue-400">View</span>,{" "}
-                                            <span className="text-blue-400">Text</span>,{" "}
-                                            <span className="text-blue-400">TouchableOpacity</span> &#125;{" "}
-                                            <span className="text-purple-400">from</span>{" "}
-                                            <span className="text-green-400">'react-native'</span>;
-                                            {"\n"}
-                                            <span className="text-purple-400">import</span> &#123; styles &#125;{" "}
-                                            <span className="text-purple-400">from</span>{" "}
-                                            <span className="text-green-400">'./styles'</span>;
                                             {"\n\n"}
                                             <span className="text-purple-400">export default function</span>{" "}
-                                            <span className="text-yellow-400">App</span>() &#123;
+                                            <span className="text-yellow-400">Page</span>() &#123;
                                             {"\n  "}
                                             <span className="text-purple-400">const</span> [count, setCount] ={" "}
                                             <span className="text-blue-400">useState</span>(<span className="text-orange-400">0</span>);
                                             {"\n\n  "}
                                             <span className="text-purple-400">return</span> ({"\n    "}
                                             <span className="text-zinc-500">&lt;</span>
-                                            <span className="text-blue-400">View</span>{" "}
-                                            <span className="text-purple-400">style</span>=&#123;styles.container&#125;
+                                            <span className="text-blue-400">main</span>{" "}
+                                            <span className="text-purple-400">className</span>=<span className="text-green-400">"flex flex-col items-center justify-center min-h-screen"</span>
                                             <span className="text-zinc-500">&gt;</span>
                                             {"\n      "}
                                             <span className="text-zinc-500">&lt;</span>
-                                            <span className="text-blue-400">Text</span>{" "}
-                                            <span className="text-purple-400">style</span>=&#123;styles.title&#125;
+                                            <span className="text-blue-400">h1</span>{" "}
+                                            <span className="text-purple-400">className</span>=<span className="text-green-400">"text-2xl font-bold text-white mb-3"</span>
                                             <span className="text-zinc-500">&gt;</span>
-                                            React Labs 🚀
+                                            {"\n        "}Next.js Labs ▲
+                                            {"\n      "}
                                             <span className="text-zinc-500">&lt;/</span>
-                                            <span className="text-blue-400">Text</span>
+                                            <span className="text-blue-400">h1</span>
                                             <span className="text-zinc-500">&gt;</span>
                                             {"\n      "}
                                             <span className="text-zinc-500">&lt;</span>
-                                            <span className="text-blue-400">Text</span>{" "}
-                                            <span className="text-purple-400">style</span>=&#123;styles.text&#125;
+                                            <span className="text-blue-400">p</span>{" "}
+                                            <span className="text-purple-400">className</span>=<span className="text-green-400">"text-zinc-400 mb-6"</span>
                                             <span className="text-zinc-500">&gt;</span>
-                                            You clicked &#123;count&#125; times
+                                            {"\n        "}You clicked &#123;count&#125; times
+                                            {"\n      "}
                                             <span className="text-zinc-500">&lt;/</span>
-                                            <span className="text-blue-400">Text</span>
+                                            <span className="text-blue-400">p</span>
                                             <span className="text-zinc-500">&gt;</span>
                                             {"\n      "}
                                             <span className="text-zinc-500">&lt;</span>
-                                            <span className="text-blue-400">TouchableOpacity</span>
+                                            <span className="text-blue-400">button</span>
                                             {"\n        "}
-                                            <span className="text-purple-400">style</span>=&#123;styles.button&#125;
+                                            <span className="text-purple-400">className</span>=<span className="text-green-400">"bg-white text-black px-5 py-2 rounded-md font-medium"</span>
                                             {"\n        "}
-                                            <span className="text-purple-400">onPress</span>=&#123;() =&gt; setCount(count +{" "}
+                                            <span className="text-purple-400">onClick</span>=&#123;() =&gt; setCount(count +{" "}
                                             <span className="text-orange-400">1</span>)&#125;
                                             {"\n      "}
                                             <span className="text-zinc-500">&gt;</span>
-                                            {"\n        "}
-                                            <span className="text-zinc-500">&lt;</span>
-                                            <span className="text-blue-400">Text</span>{" "}
-                                            <span className="text-purple-400">style</span>=&#123;styles.buttonText&#125;
-                                            <span className="text-zinc-500">&gt;</span>
-                                            Increment
-                                            <span className="text-zinc-500">&lt;/</span>
-                                            <span className="text-blue-400">Text</span>
-                                            <span className="text-zinc-500">&gt;</span>
+                                            {"\n        "}Increment
                                             {"\n      "}
                                             <span className="text-zinc-500">&lt;/</span>
-                                            <span className="text-blue-400">TouchableOpacity</span>
+                                            <span className="text-blue-400">button</span>
                                             <span className="text-zinc-500">&gt;</span>
                                             {"\n    "}
                                             <span className="text-zinc-500">&lt;/</span>
-                                            <span className="text-blue-400">View</span>
+                                            <span className="text-blue-400">main</span>
                                             <span className="text-zinc-500">&gt;</span>
                                             {"\n  "});{"\n"}&#125;
                                         </code>
                                     ) : (
                                         <code className="block animate-in fade-in duration-300">
-                                            <span className="text-purple-400">import</span> &#123;{" "}
-                                            <span className="text-blue-400">StyleSheet</span> &#125;{" "}
-                                            <span className="text-purple-400">from</span>{" "}
-                                            <span className="text-green-400">'react-native'</span>;
+                                            <span className="text-purple-400">@tailwind</span> base;
+                                            {"\n"}
+                                            <span className="text-purple-400">@tailwind</span> components;
+                                            {"\n"}
+                                            <span className="text-purple-400">@tailwind</span> utilities;
                                             {"\n\n"}
-                                            <span className="text-purple-400">export const</span> styles ={" "}
-                                            <span className="text-blue-400">StyleSheet</span>.
-                                            <span className="text-yellow-400">create</span>(&#123;
-                                            {"\n  "}container: &#123;
-                                            {"\n    "}flex: <span className="text-orange-400">1</span>,
-                                            {"\n    "}alignItems: <span className="text-green-400">'center'</span>,
-                                            {"\n    "}justifyContent: <span className="text-green-400">'center'</span>,
-                                            {"\n    "}backgroundColor: <span className="text-green-400">'#090A0D'</span>,
-                                            {"\n  "}&#125;,
-                                            {"\n  "}title: &#123;
-                                            {"\n    "}fontSize: <span className="text-orange-400">20</span>,
-                                            {"\n    "}fontWeight: <span className="text-green-400">'bold'</span>,
-                                            {"\n    "}color: <span className="text-green-400">'#FFFFFF'</span>,
-                                            {"\n    "}marginBottom: <span className="text-orange-400">12</span>,
-                                            {"\n  "}&#125;,
-                                            {"\n  "}text: &#123;
-                                            {"\n    "}color: <span className="text-green-400">'#A1A1AA'</span>,
-                                            {"\n    "}marginBottom: <span className="text-orange-400">24</span>,
-                                            {"\n  "}&#125;,
-                                            {"\n  "}button: &#123;
-                                            {"\n    "}backgroundColor: <span className="text-green-400">'#9333EA'</span>,
-                                            {"\n    "}paddingHorizontal: <span className="text-orange-400">16</span>,
-                                            {"\n    "}paddingVertical: <span className="text-orange-400">10</span>,
-                                            {"\n    "}borderRadius: <span className="text-orange-400">8</span>,
-                                            {"\n  "}&#125;,
-                                            {"\n  "}buttonText: &#123;
-                                            {"\n    "}color: <span className="text-green-400">'#FFFFFF'</span>,
-                                            {"\n    "}fontWeight: <span className="text-green-400">'600'</span>,
-                                            {"\n  "}&#125;,
-                                            {"\n"}&#125;);
+                                            <span className="text-blue-400">body</span> &#123;
+                                            {"\n  "}color: <span className="text-green-400">#ffffff</span>;
+                                            {"\n  "}background-color: <span className="text-green-400">#090A0D</span>;
+                                            {"\n"}&#125;
+                                            {"\n\n"}
+                                            <span className="text-zinc-500">/* Custom styles can go here */</span>
                                         </code>
                                     )}
                                 </pre>
                             </div>
 
-                            {/* Live Preview Panel (Simulating Mobile View) */}
-                            <div className="md:col-span-5 bg-[#090A0D] flex flex-col items-center justify-center p-6 text-center select-none relative group/preview">
+                            {/* Live Preview Panel (Simulating Web Browser View) */}
+                            <div className="md:col-span-5 bg-[#090A0D] flex flex-col items-center justify-center p-4 sm:p-6 text-center select-none relative group/preview">
                                 {/* Subtle Grid Background */}
                                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f293710_1px,transparent_1px),linear-gradient(to_bottom,#1f293710_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
 
-                                {/* Mobile Frame Simulation */}
-                                <div className="relative z-10 flex flex-col items-center w-full max-w-[240px] aspect-[1/2] border-[4px] border-zinc-800 rounded-3xl bg-[#090A0D] shadow-2xl justify-center">
-                                    {/* Notch */}
-                                    <div className="absolute top-0 w-24 h-4 bg-zinc-800 rounded-b-xl" />
+                                {/* Web Browser Frame Simulation */}
+                                <div className="relative z-10 flex flex-col w-full max-w-[320px] aspect-[4/3] border border-zinc-800 rounded-lg bg-[#090A0D] shadow-2xl overflow-hidden">
+                                    {/* Browser Header Tab */}
+                                    <div className="h-8 bg-[#13151C] border-b border-zinc-800 flex items-center px-3 space-x-2">
+                                        <div className="flex space-x-1.5">
+                                            <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                                            <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                                            <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                                        </div>
+                                        <div className="mx-auto bg-[#090A0D] border border-zinc-800/80 rounded px-24 py-0.5 text-[9px] text-zinc-500 font-sans tracking-wide">
+                                            localhost:3000
+                                        </div>
+                                    </div>
 
-                                    <div className="flex flex-col items-center p-4">
-                                        <div className="w-12 h-12 rounded-xl bg-purple-600/10 border border-purple-500/20 flex items-center justify-center mb-4">
-                                            <svg className="w-6 h-6 text-purple-400 animate-[spin_20s_linear_infinite]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                                <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(0 12 12)" />
-                                                <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)" />
-                                                <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)" />
-                                                <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                                    {/* Web App Content */}
+                                    <div className="flex-1 flex flex-col items-center justify-center p-4">
+                                        <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4 shadow-lg">
+                                            <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 2L22 20H2L12 2Z" />
                                             </svg>
                                         </div>
 
-                                        <h3 className="text-lg font-bold text-white mb-2 tracking-tight">
-                                            React Labs 🚀
+                                        <h3 className="text-base font-bold text-white mb-1.5 tracking-tight">
+                                            Next.js Labs
                                         </h3>
 
-                                        <p className="text-xs text-zinc-400 font-sans mb-6">
-                                            You clicked <span className="text-purple-400 font-mono font-bold">{count}</span> times
+                                        <p className="text-xs text-zinc-400 font-sans mb-5">
+                                            You clicked <span className="text-white font-mono font-bold">{count}</span> times
                                         </p>
 
                                         <button
                                             onClick={() => setCount((prev) => prev + 1)}
-                                            className="bg-purple-600 hover:bg-purple-500 active:scale-95 text-white font-semibold font-sans px-5 py-2.5 rounded-lg shadow-lg shadow-purple-600/20 transition-all duration-150 text-sm tracking-wide"
+                                            className="bg-white hover:bg-zinc-200 text-black active:scale-95 font-semibold font-sans px-4 py-2 rounded-md transition-all duration-150 text-xs tracking-wide"
                                         >
                                             Increment
                                         </button>
@@ -377,10 +346,10 @@ export const styles = StyleSheet.create({
 
                                 <div className="absolute bottom-3 right-3 flex items-center space-x-2 text-[10px] text-zinc-500 font-sans tracking-wider uppercase">
                                     <span className="relative flex h-2 w-2">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                                     </span>
-                                    <span>Expo Go</span>
+                                    <span>Local Dev Server</span>
                                 </div>
                             </div>
                         </div>

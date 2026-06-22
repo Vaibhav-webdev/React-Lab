@@ -1,7 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Inter } from "next/font/google"
-import Navbar from "./components/common/Navbar";
-import Footer from "./components/common/Footer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,11 +30,9 @@ export default function RootLayout({ children }) {
     >
       {/* Agar Method 1 use kar rahe ho toh class="font-sans" zaroor lagana */}
       <body className="min-h-full flex flex-col font-inter bg-[#0d0e12] text-white">
-        <Navbar />
         <main className="grow">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   );

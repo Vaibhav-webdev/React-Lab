@@ -14,7 +14,7 @@ import {
 const features = [
     {
         icon: Terminal,
-        title: "Interactive Labs",
+        title: "Live Code Editor",
         desc: "Write, run and test React code in our in-browser playground.",
         color: "text-purple-400",
         bgColor: "bg-purple-500/10",
@@ -38,8 +38,8 @@ const features = [
     },
     {
         icon: Zap,
-        title: "Instant Feedback",
-        desc: "Get real-time feedback and hints to improve faster.",
+        title: "Fix The Bug",
+        desc: "The exact bugs interviewers use to reject you. Fix them under the clock, live on a call.",
         color: "text-pink-400",
         bgColor: "bg-pink-500/10",
         className: "md:col-span-1 lg:col-span-1.5"
@@ -96,7 +96,7 @@ export default function FeaturesSection() {
 
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
 
-                        Everything you need to <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">master React Native</span>
+                        Everything you need to <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">master NextJS</span>
 
                     </h2>
 
