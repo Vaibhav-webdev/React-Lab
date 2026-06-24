@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Panel, Group, PanelResizeHandle } from "react-resizable-panels";
+import { Group, Panel, Separator } from "react-resizable-panels";
 import {
   Bug,
   Tag,
@@ -48,7 +48,7 @@ function ResizeHandle({ direction = "horizontal" }) {
   const isH = direction === "horizontal";
 
   return (
-    <PanelResizeHandle
+    <Separator
       className={[
         "relative group z-10 flex-shrink-0 flex items-center justify-center",
         "transition-colors duration-150 select-none",
@@ -76,7 +76,7 @@ function ResizeHandle({ direction = "horizontal" }) {
           />
         ))}
       </div>
-    </PanelResizeHandle>
+    </Separator>
   );
 }
 
