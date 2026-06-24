@@ -1,6 +1,11 @@
+"use client"
+
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 const CallToAction = () => {
+  const router = useRouter()
+
   return (
     <section className="bg-[#060608] w-full py-18 px-4 flex justify-center">
       {/* Main Container - max-width set kiya hai for larger screens */}
@@ -59,7 +64,9 @@ const CallToAction = () => {
               </svg>
             </button>
             
-            <button className="w-full sm:w-auto bg-[#1A1A1A] hover:bg-[#2A2A2A] border border-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">
+            <button onClick={() => {
+              router.push('/interview')
+            }} className="w-full sm:w-auto bg-[#1A1A1A] hover:bg-[#2A2A2A] border border-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">
               Try Mock Interviews
             </button>
           </div>

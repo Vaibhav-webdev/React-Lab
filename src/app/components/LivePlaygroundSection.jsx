@@ -8,66 +8,50 @@ import { Check, ExternalLink, Eye, Settings } from "lucide-react";
 export default function LivePlayground() {
     // Interactive preview state to make the mock IDE alive!
     const [count, setCount] = useState(0);
-    const [activeTab, setActiveTab] = useState("App.jsx");
+    const [activeTab, setActiveTab] = useState("page.jsx");
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
         let textToCopy = "";
 
         // 1. Pehle decide karlo ki kaunsa text copy karna hai
-        if (activeTab === "App.jsx") {
-            textToCopy = `import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { styles } from './styles';
+        if (activeTab === "page.jsx") {
+            textToCopy = `'use client';
 
-export default function App() {
-    const [count, setCount] = useState(0);
+import { useState } from 'react';
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>React Labs 🚀</Text>
-            <Text style={styles.text}>You clicked {count} times</Text>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => setCount(count + 1)}
-            >
-                <Text style={styles.buttonText}>Increment</Text>
-            </TouchableOpacity>
-        </View>
-    );
+export default function Page() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <main className="flex flex-col items-center justify-center min-h-screen">
+      <h1 className="text-2xl font-bold text-white mb-3">
+        Next.js Labs ▲
+      </h1>
+      <p className="text-zinc-400 mb-6">
+        You clicked {count} times
+      </p>
+      <button
+        className="bg-white text-black px-5 py-2 rounded-md font-medium"
+        onClick={() => setCount(count + 1)}
+      >
+        Increment
+      </button>
+    </main>
+  );
 }`;
         } else {
             // Agar App.jsx nahi hai, to ye wala code set hoga
-            textToCopy = `import { StyleSheet } from 'react-native';
+            textToCopy = `@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#090A0D',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 12,
-  },
-  text: {
-    color: '#A1A1AA',
-    marginBottom: 24,
-  },
-  button: {
-    backgroundColor: '#9333EA',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-});`;
+body {
+  color: #ffffff;
+  background-color: #090A0D;
+}
+
+/* Custom styles can go here */`;
         }
 
         // 2. Copy karne ka logic sirf EK baar (No code repetition)
@@ -185,7 +169,7 @@ export const styles = StyleSheet.create({
                             {/* Tabs */}
                             <div className="flex items-center space-x-1 bg-zinc-950/40 p-0.5 rounded-md border border-zinc-900">
                                 <button
-                                    onClick={() => setActiveTab("page.tsx")}
+                                    onClick={() => setActiveTab("page.jsx")}
                                     className={`px-3 py-1 rounded font-medium text-[11px] sm:text-xs transition-colors ${activeTab === "page.tsx"
                                         ? "bg-[#13151C] text-zinc-200 border border-zinc-800/50"
                                         : "text-zinc-500 hover:text-zinc-400 border border-transparent"
@@ -220,80 +204,72 @@ export const styles = StyleSheet.create({
                             {/* Code Editor Panel */}
                             <div className="md:col-span-7 p-4 sm:p-5 bg-[#0D0E12] border-b md:border-b-0 md:border-r border-zinc-800/60 overflow-x-auto overflow-y-auto max-w-full max-h-[500px] selection:bg-purple-500/20 relative">
                                 <pre className="text-zinc-400 leading-relaxed font-normal whitespace-pre">
-                                    {activeTab === "page.tsx" ? (
-                                        <code className="block animate-in fade-in duration-300">
-                                            <span className="text-green-400">'use client'</span>;
-                                            {"\n\n"}
-                                            <span className="text-purple-400">import</span> &#123;{" "}
-                                            <span className="text-blue-400">useState</span> &#125;{" "}
+                                    {activeTab === 'page.jsx' ? (
+                                        <code className="block animate-in fade-in duration-300 whitespace-pre text-left">
+                                            <span className="text-green-400">'use client'</span>;{'\n\n'}
+
+                                            <span className="text-purple-400">import</span> {"{ "}
+                                            <span className="text-blue-400">useState</span> {"} "}
                                             <span className="text-purple-400">from</span>{" "}
-                                            <span className="text-green-400">'react'</span>;
-                                            {"\n\n"}
+                                            <span className="text-green-400">'react'</span>;{'\n\n'}
+
                                             <span className="text-purple-400">export default function</span>{" "}
-                                            <span className="text-yellow-400">Page</span>() &#123;
-                                            {"\n  "}
-                                            <span className="text-purple-400">const</span> [count, setCount] ={" "}
-                                            <span className="text-blue-400">useState</span>(<span className="text-orange-400">0</span>);
-                                            {"\n\n  "}
-                                            <span className="text-purple-400">return</span> ({"\n    "}
-                                            <span className="text-zinc-500">&lt;</span>
+                                            <span className="text-yellow-400">Page</span>() {"{\n"}
+                                            {"  "}<span className="text-purple-400">const</span> [count, setCount] ={" "}
+                                            <span className="text-blue-400">useState</span>(<span className="text-orange-400">0</span>);{'\n\n'}
+
+                                            {"  "}<span className="text-purple-400">return</span> ({'\n'}
+                                            {"    "}<span className="text-zinc-500">{"<"}</span>
                                             <span className="text-blue-400">main</span>{" "}
                                             <span className="text-purple-400">className</span>=<span className="text-green-400">"flex flex-col items-center justify-center min-h-screen"</span>
-                                            <span className="text-zinc-500">&gt;</span>
-                                            {"\n      "}
-                                            <span className="text-zinc-500">&lt;</span>
+                                            <span className="text-zinc-500">{">"}{'\n'}</span>
+
+                                            {"      "}<span className="text-zinc-500">{"<"}</span>
                                             <span className="text-blue-400">h1</span>{" "}
                                             <span className="text-purple-400">className</span>=<span className="text-green-400">"text-2xl font-bold text-white mb-3"</span>
-                                            <span className="text-zinc-500">&gt;</span>
-                                            {"\n        "}Next.js Labs ▲
-                                            {"\n      "}
-                                            <span className="text-zinc-500">&lt;/</span>
+                                            <span className="text-zinc-500">{">"}{'\n'}</span>
+                                            {"        "}Next.js Labs ▲{'\n'}
+                                            {"      "}<span className="text-zinc-500">{"</"}</span>
                                             <span className="text-blue-400">h1</span>
-                                            <span className="text-zinc-500">&gt;</span>
-                                            {"\n      "}
-                                            <span className="text-zinc-500">&lt;</span>
+                                            <span className="text-zinc-500">{">"}{'\n'}</span>
+
+                                            {"      "}<span className="text-zinc-500">{"<"}</span>
                                             <span className="text-blue-400">p</span>{" "}
                                             <span className="text-purple-400">className</span>=<span className="text-green-400">"text-zinc-400 mb-6"</span>
-                                            <span className="text-zinc-500">&gt;</span>
-                                            {"\n        "}You clicked &#123;count&#125; times
-                                            {"\n      "}
-                                            <span className="text-zinc-500">&lt;/</span>
+                                            <span className="text-zinc-500">{">"}{'\n'}</span>
+                                            {"        "}You clicked {"{"}count{"}"} times{'\n'}
+                                            {"      "}<span className="text-zinc-500">{"</"}</span>
                                             <span className="text-blue-400">p</span>
-                                            <span className="text-zinc-500">&gt;</span>
-                                            {"\n      "}
-                                            <span className="text-zinc-500">&lt;</span>
+                                            <span className="text-zinc-500">{">"}{'\n'}</span>
+
+                                            {"      "}<span className="text-zinc-500">{"<"}</span>
+                                            <span className="text-blue-400">button</span>{'\n'}
+                                            {"        "}<span className="text-purple-400">className</span>=<span className="text-green-400">"bg-white text-black px-5 py-2 rounded-md font-medium"</span>{'\n'}
+                                            {"        "}<span className="text-purple-400">onClick</span>={"{"}() =&gt; setCount(count +{" "}
+                                            <span className="text-orange-400">1</span>){"}"}{'\n'}
+                                            {"      "}<span className="text-zinc-500">{">"}{'\n'}</span>
+                                            {"        "}Increment{'\n'}
+                                            {"      "}<span className="text-zinc-500">{"</"}</span>
                                             <span className="text-blue-400">button</span>
-                                            {"\n        "}
-                                            <span className="text-purple-400">className</span>=<span className="text-green-400">"bg-white text-black px-5 py-2 rounded-md font-medium"</span>
-                                            {"\n        "}
-                                            <span className="text-purple-400">onClick</span>=&#123;() =&gt; setCount(count +{" "}
-                                            <span className="text-orange-400">1</span>)&#125;
-                                            {"\n      "}
-                                            <span className="text-zinc-500">&gt;</span>
-                                            {"\n        "}Increment
-                                            {"\n      "}
-                                            <span className="text-zinc-500">&lt;/</span>
-                                            <span className="text-blue-400">button</span>
-                                            <span className="text-zinc-500">&gt;</span>
-                                            {"\n    "}
-                                            <span className="text-zinc-500">&lt;/</span>
+                                            <span className="text-zinc-500">{">"}{'\n'}</span>
+
+                                            {"    "}<span className="text-zinc-500">{"</"}</span>
                                             <span className="text-blue-400">main</span>
-                                            <span className="text-zinc-500">&gt;</span>
-                                            {"\n  "});{"\n"}&#125;
+                                            <span className="text-zinc-500">{">"}{'\n'}</span>
+                                            {"  "});{"\n"}
+                                            {"}"}
                                         </code>
                                     ) : (
-                                        <code className="block animate-in fade-in duration-300">
-                                            <span className="text-purple-400">@tailwind</span> base;
-                                            {"\n"}
-                                            <span className="text-purple-400">@tailwind</span> components;
-                                            {"\n"}
-                                            <span className="text-purple-400">@tailwind</span> utilities;
-                                            {"\n\n"}
-                                            <span className="text-blue-400">body</span> &#123;
-                                            {"\n  "}color: <span className="text-green-400">#ffffff</span>;
-                                            {"\n  "}background-color: <span className="text-green-400">#090A0D</span>;
-                                            {"\n"}&#125;
-                                            {"\n\n"}
+                                        <code className="block animate-in fade-in duration-300 whitespace-pre text-left">
+                                            <span className="text-purple-400">@tailwind</span> base;{'\n'}
+                                            <span className="text-purple-400">@tailwind</span> components;{'\n'}
+                                            <span className="text-purple-400">@tailwind</span> utilities;{'\n\n'}
+
+                                            <span className="text-blue-400">body</span> {"{\n"}
+                                            {"  "}color: <span className="text-green-400">#ffffff</span>;{'\n'}
+                                            {"  "}background-color: <span className="text-green-400">#090A0D</span>;{'\n'}
+                                            {"}"}{'\n\n'}
+
                                             <span className="text-zinc-500">/* Custom styles can go here */</span>
                                         </code>
                                     )}
@@ -355,7 +331,6 @@ export const styles = StyleSheet.create({
                         </div>
                     </div>
                 </motion.div>
-
             </div>
         </section>
     );

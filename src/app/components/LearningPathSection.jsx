@@ -2,21 +2,19 @@
 
 import React, { useState } from 'react';
 import { 
-  Smartphone, 
-  Palette, 
-  Map, 
-  Database, 
-  Camera, 
-  PlayCircle, 
+  Database,
+  Layout,
+  Compass,
+  Cpu,
+  RefreshCw,
+  Gauge,
+  Globe,
+  AlertTriangle,
+  Zap,
+  Network,
   Rocket, 
-  ExternalLink,
+  Shield,
   Code,
-  Cloud,
-  Bell,
-  ShieldAlert,
-  CheckCircle,
-  Lock,
-  List,
   CheckCircle2 
 } from 'lucide-react';
 
@@ -185,10 +183,10 @@ const nextJsTopics = [
 
 export default function LearningPathSection() {
   // State to manage which topic is currently selected
-  const [activeTopicId, setActiveTopicId] = useState(reactNativeTopics[0].id);
+  const [activeTopicId, setActiveTopicId] = useState(nextJsTopics[0].id);
 
   // Find the full details of the active topic
-  const activeTopic = reactNativeTopics.find(topic => topic.id === activeTopicId);
+  const activeTopic = nextJsTopics.find(topic => topic.id === activeTopicId);
 
   return (
     <section id='roadmap' className="w-full bg-[#060608] py-20 px-4 sm:px-6 lg:px-8 flex justify-center">
