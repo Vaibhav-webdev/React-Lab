@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Group, Panel, Separator } from "react-resizable-panels";
 import {
   Bug,
   Tag,
@@ -39,154 +38,6 @@ function formatTime(seconds) {
   const m = Math.floor(Math.abs(seconds) / 60);
   const s = Math.abs(seconds) % 60;
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
-
-// ── Drag Handle Component ─────────────────────────────────────────────────────
-// direction="horizontal" → column resize (cursor: col-resize)
-// direction="vertical"   → row resize    (cursor: row-resize)
-function ResizeHandle({ direction = "horizontal" }) {
-  const isH = direction === "horizontal";
-
-  return (
-    <Separator
-      className={[
-        "relative group z-10 flex-shrink-0 flex items-center justify-center",
-        "transition-colors duration-150 select-none",
-        isH
-          ? "w-[3px] cursor-col-resize bg-slate-800/80 hover:bg-purple-600/60 active:bg-purple-500"
-          : "h-[3px] cursor-row-resize bg-slate-800/80 hover:bg-purple-600/60 active:bg-purple-500",
-      ].join(" ")}
-    >
-      {/*
-        Floating grip pill — appears on hover in the center of the handle.
-        Dots are vertical (⋮) for H handles, horizontal (⋯) for V handles.
-      */}
-      <div
-        className={[
-          "absolute z-20 rounded-full flex items-center justify-center",
-          "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
-          "bg-[#1a1a2e] border border-purple-600/40 shadow-xl",
-          isH ? "flex-col gap-[4px] py-2.5 px-[5px]" : "flex-row gap-[4px] px-2.5 py-[5px]",
-        ].join(" ")}
-      >
-        {[0, 1, 2, 3].map((i) => (
-          <span
-            key={i}
-            className="block w-[3px] h-[3px] rounded-full bg-purple-400/90"
-          />
-        ))}
-      </div>
-    </Separator>
-  );
-}
-
-// ── Top Bar ────────────────────────────────────────────────────────────────────
-function TopBar({
-  questions,
-  currentIdx,
-  timeLeft,
-  totalTime,
-  onSkip,
-  isLastQuestion,
-  allPassed,
-  onNext,
-}) {
-  const isWarning = timeLeft <= 120 && timeLeft > 60;
-  const isDanger = timeLeft <= 60;
-  const currentQ = questions[currentIdx];
-  const diff = DIFFICULTY_STYLES[currentQ.difficulty];
-
-  return (
-    <div
-      className="h-[52px] flex-shrink-0 flex items-center justify-between px-8 py-10
-        bg-[#0a0a0a] border-b border-slate-800/70 backdrop-blur-sm z-20"
-    >
-      {/* Left: progress dots + label */}
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1.5">
-          {questions.map((_, i) => (
-            <button
-              key={i}
-              aria-label={`Question ${i + 1}`}
-              className={`w-7 h-7 rounded-full text-xs font-bold border transition-all duration-300
-                ${
-                  i === currentIdx
-                    ? "bg-purple-600 border-purple-500 text-white scale-110 shadow-lg shadow-purple-900/50"
-                    : i < currentIdx
-                    ? "bg-slate-700 border-slate-600 text-slate-300"
-                    : "bg-transparent border-slate-700 text-slate-500"
-                }`}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
-        <span className="text-slate-500 text-sm hidden sm:block">
-          Challenge {currentIdx + 1} of {questions.length}
-        </span>
-      </div>
-
-      {/* Right: difficulty + timer + action */}
-      <div className="flex items-center gap-3">
-        <span
-          className={`hidden sm:inline-flex items-center gap-1.5 text-[10px] font-semibold
-            px-2.5 py-1 rounded-full border ${diff.bg} ${diff.text} ${diff.border}`}
-        >
-          <span className={`w-1.5 h-1.5 rounded-full ${diff.dot}`} />
-          {diff.label}
-        </span>
-
-        <span className="text-slate-600 text-xs hidden sm:block">
-          {Math.floor(currentQ.timeLimit / 60)} min
-        </span>
-
-        <div
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono font-bold text-sm
-            border transition-all duration-500
-            ${
-              isDanger
-                ? "bg-red-500/15 border-red-500/40 text-red-400 animate-pulse"
-                : isWarning
-                ? "bg-amber-500/15 border-amber-500/40 text-amber-400"
-                : "bg-slate-800/60 border-slate-700/50 text-slate-200"
-            }`}
-        >
-          <Clock size={13} />
-          {formatTime(timeLeft)}
-        </div>
-
-        {allPassed ? (
-          <button
-            onClick={onNext}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg
-              bg-gradient-to-r from-purple-600 to-blue-600
-              hover:from-purple-500 hover:to-blue-500
-              text-white transition-all duration-150 active:scale-95"
-          >
-            {isLastQuestion ? (
-              <>
-                <Flag size={12} /> Finish
-              </>
-            ) : (
-              <>
-                Next <ChevronRight size={12} />
-              </>
-            )}
-          </button>
-        ) : (
-          <button
-            onClick={onSkip}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg
-              text-slate-400 hover:text-slate-200 border border-slate-700/50
-              hover:border-slate-600 transition-all duration-150 active:scale-95"
-          >
-            <SkipForward size={13} />
-            Skip
-          </button>
-        )}
-      </div>
-    </div>
-  );
 }
 
 // ── Question Info Panel ────────────────────────────────────────────────────────
@@ -252,17 +103,19 @@ export default function InterviewSession({
   const isLastQuestion = currentIdx === questions.length - 1;
 
   const [code, setCode] = useState(question.buggyCode);
-
-  // previewCode is separate from editor code — only updates on "Check"
   const [previewCode, setPreviewCode] = useState(question.buggyCode);
-  // previewKey increments on each Check to force iframe remount
   const [previewKey, setPreviewKey] = useState(0);
 
   const [testResults, setTestResults] = useState(undefined);
-  const allPassed =
-    Array.isArray(testResults) && testResults.every(Boolean);
+  const allPassed = Array.isArray(testResults) && testResults.every(Boolean);
 
-  // Reset everything when question changes
+  // ── CUSTOM RESIZE STATES & REF ──
+  const containerRef = useRef(null);
+  const [leftWidth, setLeftWidth] = useState(50); // Horizontal split %
+  const [leftTopHeight, setLeftTopHeight] = useState(42); // Left vertical %
+  const [rightTopHeight, setRightTopHeight] = useState(55); // Right vertical %
+  const [isDragging, setIsDragging] = useState(false); // Controls iframe overlay shielding
+
   useEffect(() => {
     setCode(question.buggyCode);
     setPreviewCode(question.buggyCode);
@@ -279,7 +132,6 @@ export default function InterviewSession({
       }
     });
     setTestResults(results);
-    // Push current editor code to preview & force iframe reload
     setPreviewCode(code);
     setPreviewKey((k) => k + 1);
   }, [code, question.tests]);
@@ -294,8 +146,89 @@ export default function InterviewSession({
     onSkip();
   }, [question.id, recordResult, onSkip]);
 
+  // ── CUSTOM RESIZE HANDLERS ──
+  
+  // 1. Horizontal Resize (Left ↔ Right)
+  const handleHorizontalMouseDown = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(true);
+
+    const handleMouseMove = (moveEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const offsetX = moveEvent.clientX - rect.left;
+      const percentage = (offsetX / rect.width) * 100;
+      
+      // Min 20% and Max 80% boundary limits
+      if (percentage >= 20 && percentage <= 80) {
+        setLeftWidth(percentage);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  }, []);
+
+  // 2. Left Vertical Resize (Question Info ↕ Editor)
+  const handleLeftVerticalMouseDown = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(true);
+
+    const handleMouseMove = (moveEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const offsetY = moveEvent.clientY - rect.top;
+      const percentage = (offsetY / rect.height) * 100;
+
+      if (percentage >= 12 && percentage <= 85) {
+        setLeftTopHeight(percentage);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  }, []);
+
+  // 3. Right Vertical Resize (Preview ↕ Tests)
+  const handleRightVerticalMouseDown = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(true);
+
+    const handleMouseMove = (moveEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const offsetY = moveEvent.clientY - rect.top;
+      const percentage = (offsetY / rect.height) * 100;
+
+      if (percentage >= 15 && percentage <= 85) {
+        setRightTopHeight(percentage);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  }, []);
+
   return (
-    <div className="flex flex-col h-screen bg-[#050505] overflow-hidden">
+    <div className="flex flex-col h-screen bg-[#050505] overflow-hidden select-none">
       {/* ── Top Bar ── */}
       <TopBar
         questions={questions}
@@ -308,107 +241,201 @@ export default function InterviewSession({
         onNext={handleNext}
       />
 
-      {/* ── Resizable 4-panel layout ── */}
-      <div className="flex-1 min-h-0 overflow-hidden">
-        <Group orientation='horizontal' className="h-full w-full">
+      {/* ── Main Workspace Area ── */}
+      <div 
+        ref={containerRef} 
+        className="flex-1 min-h-0 relative flex flex-row overflow-hidden"
+      >
+        {/* CRITICAL SHIELD OVERLAY: Prevents Iframe from stealing mouse moves during dragging */}
+        {isDragging && (
+          <div className="absolute inset-0 z-40 bg-transparent cursor-grabbing" />
+        )}
 
-          {/* ─────────────────── LEFT COLUMN ─────────────────── */}
-          <Panel defaultSize={50} minSize={22} maxSize={75}>
-            {/* Inner vertical group: Question Info ↕ Editor */}
-            <Group orientation="vertical" className="h-full w-full">
+        {/* ─────────────────── LEFT COLUMN ─────────────────── */}
+        <div 
+          className="flex flex-col h-full min-w-0" 
+          style={{ width: `${leftWidth}%` }}
+        >
+          {/* Question Info Panel */}
+          <div 
+            className="border-b border-gray-800/60 overflow-hidden flex-shrink-0" 
+            style={{ height: `${leftTopHeight}%` }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={question.id}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="h-full overflow-y-auto"
+              >
+                <QuestionInfo question={question} />
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-              {/* Question Info (scrollable) */}
-              <Panel defaultSize={42} minSize={12} maxSize={72}>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={question.id}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                    className="h-full overflow-y-auto border-b border-gray-800/60"
-                  >
-                    <QuestionInfo question={question} />
-                  </motion.div>
-                </AnimatePresence>
-              </Panel>
+          {/* Vertical drag handle (Left Column) */}
+          <div
+            onMouseDown={handleLeftVerticalMouseDown}
+            className="h-[4px] w-full bg-slate-800/80 hover:bg-purple-600/60 active:bg-purple-500 transition-colors duration-150 cursor-row-resize flex items-center justify-center relative group z-50 flex-shrink-0"
+          >
+            <div className="absolute z-50 rounded-full flex flex-row gap-[4px] px-2.5 py-[5px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#1a1a2e] border border-purple-600/40 shadow-xl">
+              {[0, 1, 2, 3].map((i) => (
+                <span key={i} className="block w-[3px] h-[3px] rounded-full bg-purple-400/90" />
+              ))}
+            </div>
+          </div>
 
-              {/* Vertical drag handle (Question Info ↕ Editor) */}
-              <ResizeHandle direction="vertical" />
+          {/* Code Editor Panel */}
+          <div className="flex-1 min-h-0 flex flex-col border-r border-slate-800/60">
+            <div className="flex items-center justify-between px-4 py-1.5 bg-black border-b border-slate-800/50 flex-shrink-0">
+              <span className="text-slate-600 text-[10px] font-semibold tracking-widest uppercase">
+                Editor
+              </span>
+              <span className="text-slate-700 text-[10px] font-mono">
+                JavaScript · JSX
+              </span>
+            </div>
+            <div className="flex-1 min-h-0">
+              <CodeEditor value={code} onChange={setCode} />
+            </div>
+          </div>
+        </div>
 
-              {/* Code Editor */}
-              <Panel defaultSize={58} minSize={20}>
-                <div className="h-full flex flex-col border-r border-slate-800/60">
-                  <div
-                    className="flex items-center justify-between px-4 py-1.5
-                      bg-black border-b border-slate-800/50 flex-shrink-0"
-                  >
-                    <span className="text-slate-600 text-[10px] font-semibold tracking-widest uppercase">
-                      Editor
-                    </span>
-                    <span className="text-slate-700 text-[10px] font-mono">
-                      JavaScript · JSX
-                    </span>
-                  </div>
-                  <div className="flex-1 min-h-0">
-                    <CodeEditor value={code} onChange={setCode} />
-                  </div>
-                </div>
-              </Panel>
+        {/* ─────────────────── MAIN HORIZONTAL HANDLE ─────────────────── */}
+        <div
+          onMouseDown={handleHorizontalMouseDown}
+          className="w-[4px] h-full bg-slate-800/80 hover:bg-purple-600/60 active:bg-purple-500 transition-colors duration-150 cursor-col-resize flex items-center justify-center relative group z-50 flex-shrink-0"
+        >
+          <div className="absolute z-50 rounded-full flex flex-col gap-[4px] py-2.5 px-[5px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#1a1a2e] border border-purple-600/40 shadow-xl">
+            {[0, 1, 2, 3].map((i) => (
+              <span key={i} className="block w-[3px] h-[3px] rounded-full bg-purple-400/90" />
+            ))}
+          </div>
+        </div>
 
-            </Group>
-          </Panel>
+        {/* ─────────────────── RIGHT COLUMN ─────────────────── */}
+        <div 
+          className="flex flex-col h-full min-w-0 flex-1"
+        >
+          {/* Preview Panel */}
+          <div 
+            className="flex flex-col overflow-hidden flex-shrink-0" 
+            style={{ height: `${rightTopHeight}%` }}
+          >
+            <div className="flex items-center justify-between px-4 py-3 bg-[#141414] border-b border-slate-800/50 flex-shrink-0">
+              <span className="text-[#a3a3a3] text-[10px] font-semibold tracking-widest uppercase">
+                Preview
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                <span className="text-amber-500/80 text-[10px] font-medium">
+                  Updates on Check
+                </span>
+              </span>
+            </div>
+            <div className="flex-1 min-h-0">
+              <PreviewPanel code={previewCode} refreshKey={previewKey} />
+            </div>
+          </div>
 
-          {/* Horizontal drag handle (Left ↔ Right) */}
-          <ResizeHandle direction="horizontal" />
+          {/* Vertical drag handle (Right Column) */}
+          <div
+            onMouseDown={handleRightVerticalMouseDown}
+            className="h-[4px] w-full bg-slate-800/80 hover:bg-purple-600/60 active:bg-purple-500 transition-colors duration-150 cursor-row-resize flex items-center justify-center relative group z-50 flex-shrink-0"
+          >
+            <div className="absolute z-50 rounded-full flex flex-row gap-[4px] px-2.5 py-[5px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#1a1a2e] border border-purple-600/40 shadow-xl">
+              {[0, 1, 2, 3].map((i) => (
+                <span key={i} className="block w-[3px] h-[3px] rounded-full bg-purple-400/90" />
+              ))}
+            </div>
+          </div>
 
-          {/* ─────────────────── RIGHT COLUMN ─────────────────── */}
-          <Panel defaultSize={50} minSize={22} maxSize={75}>
-            {/* Inner vertical group: Preview ↕ Tests */}
-            <Group orientation="vertical" className="h-full w-full">
+          {/* Test Panel */}
+          <div className="flex-1 min-h-0">
+            <TestPanel
+              tests={question.tests}
+              results={testResults}
+              allPassed={allPassed}
+              onCheck={handleCheck}
+              onNext={handleNext}
+              isLastQuestion={isLastQuestion}
+            />
+          </div>
+        </div>
 
-              {/* Preview Panel */}
-              <Panel defaultSize={55} minSize={18}>
-                <div className="h-full flex flex-col">
-                  <div
-                    className="flex items-center justify-between px-4 py-3
-                      bg-[#141414] border-b border-slate-800/50 flex-shrink-0"
-                  >
-                    <span className="text-[#a3a3a3] text-[10px] font-semibold tracking-widest uppercase">
-                      Preview
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                      <span className="text-amber-500/80 text-[10px] font-medium">
-                        Updates on Check
-                      </span>
-                    </span>
-                  </div>
-                  <div className="flex-1 min-h-0">
-                    <PreviewPanel code={previewCode} refreshKey={previewKey} />
-                  </div>
-                </div>
-              </Panel>
+      </div>
+    </div>
+  );
+}
 
-              {/* Vertical drag handle (Preview ↕ Tests) */}
-              <ResizeHandle direction="vertical" />
+// ── Top Bar Component ──────────────────────────────────────────────────────────
+function TopBar({
+  questions,
+  currentIdx,
+  timeLeft,
+  totalTime,
+  onSkip,
+  isLastQuestion,
+  allPassed,
+  onNext,
+}) {
+  const isWarning = timeLeft <= 120 && timeLeft > 60;
+  const isDanger = timeLeft <= 60;
+  const currentQ = questions[currentIdx];
+  const diff = DIFFICULTY_STYLES[currentQ.difficulty];
 
-              {/* Test Panel */}
-              <Panel defaultSize={45} minSize={15}>
-                <TestPanel
-                  tests={question.tests}
-                  results={testResults}
-                  allPassed={allPassed}
-                  onCheck={handleCheck}
-                  onNext={handleNext}
-                  isLastQuestion={isLastQuestion}
-                />
-              </Panel>
+  return (
+    <div className="h-[52px] flex-shrink-0 flex items-center justify-between px-8 py-10 bg-[#0a0a0a] border-b border-slate-800/70 backdrop-blur-sm z-20">
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5">
+          {questions.map((_, i) => (
+            <button
+              key={i}
+              aria-label={`Question ${i + 1}`}
+              className={`w-7 h-7 rounded-full text-xs font-bold border transition-all duration-300
+                ${
+                  i === currentIdx
+                    ? "bg-purple-600 border-purple-500 text-white scale-110 shadow-lg shadow-purple-900/50"
+                    : i < currentIdx
+                    ? "bg-slate-700 border-slate-600 text-slate-300"
+                    : "bg-transparent border-slate-700 text-slate-500"
+                }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
+        <span className="text-slate-500 text-sm hidden sm:block">
+          Challenge {currentIdx + 1} of {questions.length}
+        </span>
+      </div>
 
-            </Group>
-          </Panel>
+      <div className="flex items-center gap-3">
+        <span className={`hidden sm:inline-flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-full border ${diff.bg} ${diff.text} ${diff.border}`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${diff.dot}`} />
+          {diff.label}
+        </span>
 
-        </Group>
+        <span className="text-slate-600 text-xs hidden sm:block">
+          {Math.floor(currentQ.timeLimit / 60)} min
+        </span>
+
+        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono font-bold text-sm border transition-all duration-500 ${isDanger ? "bg-red-500/15 border-red-500/40 text-red-400 animate-pulse" : isWarning ? "bg-amber-500/15 border-amber-500/40 text-amber-400" : "bg-slate-800/60 border-slate-700/50 text-slate-200"}`}>
+          <Clock size={13} />
+          {formatTime(timeLeft)}
+        </div>
+
+        {allPassed ? (
+          <button onClick={onNext} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition-all duration-150 active:scale-95">
+            {isLastQuestion ? (<><Flag size={12} /> Finish</>) : (<>Next <ChevronRight size={12} /></>)}
+          </button>
+        ) : (
+          <button onClick={onSkip} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 border border-slate-700/50 hover:border-slate-600 transition-all duration-150 active:scale-95">
+            <SkipForward size={13} /> Skip
+          </button>
+        )}
       </div>
     </div>
   );

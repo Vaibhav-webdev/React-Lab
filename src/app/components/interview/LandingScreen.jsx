@@ -111,10 +111,7 @@ export default function LandingScreen({ onStart }) {
 
           <a
             href="/"
-            className="group relative inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-              font-semibold text-gray-400 text-base overflow-hidden
-              bg-zinc-900 transition-all duration-200 active:scale-[0.97]
-              shadow-lg shadow-gray-900/40"
+            className="group relative inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-gray-400 text-base overflow-hidden bg-zinc-900 transition-all duration-200 active:scale-[0.97] shadow-lg shadow-gray-900/40"
           >
             <span><MoveLeft size={28} color="gray" /></span> Back to curriculum
           </a>

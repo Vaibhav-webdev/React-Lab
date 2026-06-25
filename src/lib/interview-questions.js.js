@@ -9,14 +9,14 @@ export const ALL_QUESTIONS = [
     id: 1,
     title: "The Missing Key",
     difficulty: "EASY",
-    timeLimit: 180, // seconds
+    timeLimit: 180,
     tags: ["Lists", "Rendering"],
     bugReport:
       "Adding or removing items from the list causes unexpected re-renders. React throws a console warning about missing keys and list updates are visually glitchy.",
     description:
       "This component renders a list of JavaScript frameworks. When you remove items, React doesn't know which element to unmount. Find and fix the missing key bug so the list renders stably.",
     buggyCode: `function App() {
-  const [frameworks, setFrameworks] = React.useState([
+  const [frameworks, setFrameworks] = useState([
     { id: 1, name: "React" },
     { id: 2, name: "Vue" },
     { id: 3, name: "Angular" },
@@ -28,13 +28,16 @@ export const ALL_QUESTIONS = [
   };
 
   return (
-    <div style={{ padding: "16px" }}>
-      <h3>JS Frameworks</h3>
-      <ul>
+    <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+      <h3 className="text-2xl font-semibold mb-6 tracking-tight text-neutral-100">JS Frameworks</h3>
+      <ul className="space-y-3">
         {frameworks.map((fw) => (
-          <li style={{ marginBottom: "8px" }}>
-            {fw.name}
-            <button onClick={() => remove(fw.id)} style={{ marginLeft: "8px" }}>
+          <li className="flex items-center justify-between p-4 bg-[#1a1a1a] rounded-lg border border-neutral-800 hover:border-neutral-600 transition-colors">
+            <span className="text-lg font-medium text-neutral-200">{fw.name}</span>
+            <button
+              onClick={() => remove(fw.id)}
+              className="px-5 py-2.5 text-sm font-semibold rounded-md bg-[#1a1a1a] text-red-400 border border-neutral-800 hover:bg-red-950/30 hover:border-red-800 transition-all shadow-sm"
+            >
               Remove
             </button>
           </li>
@@ -44,7 +47,7 @@ export const ALL_QUESTIONS = [
   );
 }`,
     fixedCode: `function App() {
-  const [frameworks, setFrameworks] = React.useState([
+  const [frameworks, setFrameworks] = useState([
     { id: 1, name: "React" },
     { id: 2, name: "Vue" },
     { id: 3, name: "Angular" },
@@ -56,13 +59,19 @@ export const ALL_QUESTIONS = [
   };
 
   return (
-    <div style={{ padding: "16px" }}>
-      <h3>JS Frameworks</h3>
-      <ul>
+    <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+      <h3 className="text-2xl font-semibold mb-6 tracking-tight text-neutral-100">JS Frameworks</h3>
+      <ul className="space-y-3">
         {frameworks.map((fw) => (
-          <li key={fw.id} style={{ marginBottom: "8px" }}>
-            {fw.name}
-            <button onClick={() => remove(fw.id)} style={{ marginLeft: "8px" }}>
+          <li
+            key={fw.id}
+            className="flex items-center justify-between p-4 bg-[#1a1a1a] rounded-lg border border-neutral-800 hover:border-neutral-600 transition-colors"
+          >
+            <span className="text-lg font-medium text-neutral-200">{fw.name}</span>
+            <button
+              onClick={() => remove(fw.id)}
+              className="px-5 py-2.5 text-sm font-semibold rounded-md bg-[#1a1a1a] text-red-400 border border-neutral-800 hover:bg-red-950/30 hover:border-red-800 transition-all shadow-sm"
+            >
               Remove
             </button>
           </li>
@@ -88,8 +97,7 @@ export const ALL_QUESTIONS = [
       },
       {
         label: "map() still renders each framework name",
-        check: (code) =>
-          code.includes("fw.name") || code.includes("f.name"),
+        check: (code) => code.includes("fw.name") || code.includes("f.name"),
       },
     ],
   },
@@ -106,7 +114,7 @@ export const ALL_QUESTIONS = [
     description:
       "This counter component mutates state directly before calling setState, which means React sees the same object reference and skips re-rendering. Fix the immutability bug.",
     buggyCode: `function App() {
-  const [state, setState] = React.useState({ count: 0, label: "Counter" });
+  const [state, setState] = useState({ count: 0, label: "Counter" });
 
   const increment = () => {
     state.count += 1;
@@ -119,18 +127,28 @@ export const ALL_QUESTIONS = [
   };
 
   return (
-    <div style={{ padding: "16px", textAlign: "center" }}>
-      <p style={{ fontSize: "14px", color: "#94a3b8" }}>{state.label}</p>
-      <h1 style={{ fontSize: "56px", margin: "8px 0" }}>{state.count}</h1>
-      <button onClick={increment} style={{ marginRight: "8px" }}>
-        Increment
-      </button>
-      <button onClick={reset}>Reset</button>
+    <div className="p-8 text-center bg-[#141414] border border-neutral-800 rounded-2xl shadow-sm">
+      <p className="text-base font-medium text-neutral-500 mb-1">{state.label}</p>
+      <h1 className="text-7xl font-extrabold tracking-tighter text-blue-400 mb-6">{state.count}</h1>
+      <div className="flex gap-4 justify-center">
+        <button
+          onClick={increment}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
+        >
+          Increment
+        </button>
+        <button
+          onClick={reset}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-neutral-800 text-neutral-200 hover:bg-neutral-700 transition-all"
+        >
+          Reset
+        </button>
+      </div>
     </div>
   );
 }`,
     fixedCode: `function App() {
-  const [state, setState] = React.useState({ count: 0, label: "Counter" });
+  const [state, setState] = useState({ count: 0, label: "Counter" });
 
   const increment = () => {
     setState({ ...state, count: state.count + 1 });
@@ -141,13 +159,23 @@ export const ALL_QUESTIONS = [
   };
 
   return (
-    <div style={{ padding: "16px", textAlign: "center" }}>
-      <p style={{ fontSize: "14px", color: "#94a3b8" }}>{state.label}</p>
-      <h1 style={{ fontSize: "56px", margin: "8px 0" }}>{state.count}</h1>
-      <button onClick={increment} style={{ marginRight: "8px" }}>
-        Increment
-      </button>
-      <button onClick={reset}>Reset</button>
+    <div className="p-8 text-center bg-[#141414] border border-neutral-800 rounded-2xl shadow-sm">
+      <p className="text-base font-medium text-neutral-500 mb-1">{state.label}</p>
+      <h1 className="text-7xl font-extrabold tracking-tighter text-blue-400 mb-6">{state.count}</h1>
+      <div className="flex gap-4 justify-center">
+        <button
+          onClick={increment}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
+        >
+          Increment
+        </button>
+        <button
+          onClick={reset}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-neutral-800 text-neutral-200 hover:bg-neutral-700 transition-all"
+        >
+          Reset
+        </button>
+      </div>
     </div>
   );
 }`,
@@ -159,8 +187,7 @@ export const ALL_QUESTIONS = [
       },
       {
         label: "setState receives a new object literal",
-        check: (code) =>
-          code.includes("setState({") || code.includes("setState( {"),
+        check: (code) => code.includes("setState({") || code.includes("setState( {"),
       },
       {
         label: "Spread operator preserves other state fields",
@@ -181,8 +208,8 @@ export const ALL_QUESTIONS = [
     description:
       "A controlled React input requires both a value prop AND an onChange handler. Without onChange, the input is read-only. Add the missing handler to unfreeze the search field.",
     buggyCode: `function App() {
-  const [query, setQuery] = React.useState("");
-  const [results, setResults] = React.useState([]);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
 
   const search = () => {
     const data = ["Next.js", "Nuxt", "Remix", "Astro", "SvelteKit"];
@@ -192,28 +219,38 @@ export const ALL_QUESTIONS = [
   };
 
   return (
-    <div style={{ padding: "16px" }}>
-      <h3>Framework Search</h3>
-      <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+    <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+      <h3 className="text-2xl font-semibold mb-5 tracking-tight text-neutral-100">Framework Search</h3>
+      <div className="flex gap-3 mb-6">
         <input
           value={query}
           placeholder="Search frameworks..."
-          style={{ padding: "6px 10px", flex: 1, borderRadius: "6px" }}
+          className="py-3 px-4 flex-1 rounded-lg border border-neutral-600 bg-[#1a1a1a] text-neutral-100 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 text-lg transition-all"
         />
-        <button onClick={search}>Search</button>
+        <button
+          onClick={search}
+          className="px-6 py-3 text-lg font-semibold rounded-lg bg-violet-600 text-white hover:bg-violet-700 transition-all shadow-md shadow-violet-500/10"
+        >
+          Search
+        </button>
       </div>
-      {results.map((r, i) => (
-        <div key={i} style={{ padding: "4px 0" }}>
-          • {r}
-        </div>
-      ))}
-      {results.length === 0 && query && <p>No results found.</p>}
+      <div className="space-y-3">
+        {results.map((r, i) => (
+          <div
+            key={i}
+            className="p-4 bg-[#1a1a1a] rounded-lg border border-neutral-800 font-mono text-lg text-neutral-200"
+          >
+            • {r}
+          </div>
+        ))}
+      </div>
+      {results.length === 0 && query && <p className="text-lg text-neutral-400 italic">No results found.</p>}
     </div>
   );
 }`,
     fixedCode: `function App() {
-  const [query, setQuery] = React.useState("");
-  const [results, setResults] = React.useState([]);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
 
   const search = () => {
     const data = ["Next.js", "Nuxt", "Remix", "Astro", "SvelteKit"];
@@ -223,23 +260,33 @@ export const ALL_QUESTIONS = [
   };
 
   return (
-    <div style={{ padding: "16px" }}>
-      <h3>Framework Search</h3>
-      <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+    <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+      <h3 className="text-2xl font-semibold mb-5 tracking-tight text-neutral-100">Framework Search</h3>
+      <div className="flex gap-3 mb-6">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search frameworks..."
-          style={{ padding: "6px 10px", flex: 1, borderRadius: "6px" }}
+          className="py-3 px-4 flex-1 rounded-lg border border-neutral-600 bg-[#1a1a1a] text-neutral-100 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 text-lg transition-all"
         />
-        <button onClick={search}>Search</button>
+        <button
+          onClick={search}
+          className="px-6 py-3 text-lg font-semibold rounded-lg bg-violet-600 text-white hover:bg-violet-700 transition-all shadow-md shadow-violet-500/10"
+        >
+          Search
+        </button>
       </div>
-      {results.map((r, i) => (
-        <div key={i} style={{ padding: "4px 0" }}>
-          • {r}
-        </div>
-      ))}
-      {results.length === 0 && query && <p>No results found.</p>}
+      <div className="space-y-3">
+        {results.map((r, i) => (
+          <div
+            key={i}
+            className="p-4 bg-[#1a1a1a] rounded-lg border border-neutral-800 font-mono text-lg text-neutral-200"
+          >
+            • {r}
+          </div>
+        ))}
+      </div>
+      {results.length === 0 && query && <p className="text-lg text-neutral-400 italic">No results found.</p>}
     </div>
   );
 }`,
@@ -250,8 +297,7 @@ export const ALL_QUESTIONS = [
       },
       {
         label: "onChange updates the query state",
-        check: (code) =>
-          code.includes("setQuery") && code.includes("onChange"),
+        check: (code) => code.includes("setQuery") && code.includes("onChange"),
       },
       {
         label: "Input reads from e.target.value",
@@ -273,7 +319,7 @@ export const ALL_QUESTIONS = [
     description:
       "All three increment() calls inside addThree() close over the same stale count value. Each call schedules setCount(0 + 1), so they collapse into a single update. Use the functional update form to fix this.",
     buggyCode: `function App() {
-  const [count, setCount] = React.useState(0);
+  const [count, setCount] = useState(0);
 
   const increment = () => {
     setCount(count + 1);
@@ -286,23 +332,34 @@ export const ALL_QUESTIONS = [
   };
 
   return (
-    <div style={{ padding: "16px", textAlign: "center" }}>
-      <h2 id="count">Count: {count}</h2>
-      <button
-        id="increment"
-        onClick={increment}
-        style={{ marginRight: "8px" }}
+    <div className="p-8 text-center bg-[#141414] border border-neutral-800 rounded-2xl shadow-sm">
+      <h1
+        id="count"
+        className="text-5xl font-extrabold mb-8 tracking-tighter text-emerald-400"
       >
-        Increment
-      </button>
-      <button id="add-three" onClick={addThree}>
-        Add 3
-      </button>
+        Count: {count}
+      </h1>
+      <div className="flex gap-4 justify-center">
+        <button
+          id="increment"
+          onClick={increment}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-500/20"
+        >
+          Increment
+        </button>
+        <button
+          id="add-three"
+          onClick={addThree}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-[#1a1a1a] text-emerald-400 border-2 border-emerald-700 hover:bg-emerald-950/30 transition-all shadow-md shadow-emerald-500/10"
+        >
+          Add 3
+        </button>
+      </div>
     </div>
   );
 }`,
     fixedCode: `function App() {
-  const [count, setCount] = React.useState(0);
+  const [count, setCount] = useState(0);
 
   const increment = () => {
     setCount((prev) => prev + 1);
@@ -315,18 +372,29 @@ export const ALL_QUESTIONS = [
   };
 
   return (
-    <div style={{ padding: "16px", textAlign: "center" }}>
-      <h2 id="count">Count: {count}</h2>
-      <button
-        id="increment"
-        onClick={increment}
-        style={{ marginRight: "8px" }}
+    <div className="p-8 text-center bg-[#141414] border border-neutral-800 rounded-2xl shadow-sm">
+      <h1
+        id="count"
+        className="text-5xl font-extrabold mb-8 tracking-tighter text-emerald-400"
       >
-        Increment
-      </button>
-      <button id="add-three" onClick={addThree}>
-        Add 3
-      </button>
+        Count: {count}
+      </h1>
+      <div className="flex gap-4 justify-center">
+        <button
+          id="increment"
+          onClick={increment}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-500/20"
+        >
+          Increment
+        </button>
+        <button
+          id="add-three"
+          onClick={addThree}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-[#1a1a1a] text-emerald-400 border-2 border-emerald-700 hover:bg-emerald-950/30 transition-all shadow-md shadow-emerald-500/10"
+        >
+          Add 3
+        </button>
+      </div>
     </div>
   );
 }`,
@@ -346,9 +414,7 @@ export const ALL_QUESTIONS = [
       {
         label: "'Add 3' button adds exactly 3",
         check: (code) =>
-          (code.includes("prev =>") ||
-            code.includes("p =>") ||
-            code.includes("prevCount =>")) &&
+          (code.includes("prev =>") || code.includes("p =>") || code.includes("prevCount =>")) &&
           code.includes("+ 1"),
       },
     ],
@@ -365,29 +431,23 @@ export const ALL_QUESTIONS = [
       "The toggle button label updates correctly but the nested Card component always shows 'light' as the theme. Toggling does nothing to the deep UI. The Context value never reaches consumers.",
     description:
       "ThemeContext.Provider is missing its value prop, so all consumers receive the context default ('light') instead of the dynamic state. Pass the theme state as the Provider's value to fix it.",
-    buggyCode: `const ThemeContext = React.createContext("light");
+    buggyCode: `const ThemeContext = createContext("light");
 
 function Card() {
-  const theme = React.useContext(ThemeContext);
+  const theme = useContext(ThemeContext);
   return (
     <div
-      style={{
-        padding: "16px",
-        background: theme === "dark" ? "#1a1a2e" : "#f0f0f0",
-        color: theme === "dark" ? "#fff" : "#000",
-        borderRadius: "8px",
-        marginTop: "12px",
-      }}
+      className={\`p-6 rounded-xl mt-6 shadow-sm border transition-all duration-300 \${theme === "dark" ? "bg-slate-900 text-white border-slate-700" : "bg-[#1a1a1a] text-neutral-200 border-neutral-700"}\`}
     >
-      <p>
-        Current Theme: <strong id="theme-label">{theme}</strong>
+      <p className="text-lg font-medium">
+        Current Theme: <strong id="theme-label" className="font-bold underline text-xl">{theme}</strong>
       </p>
     </div>
   );
 }
 
 function App() {
-  const [theme, setTheme] = React.useState("light");
+  const [theme, setTheme] = useState("light");
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -395,36 +455,35 @@ function App() {
 
   return (
     <ThemeContext.Provider>
-      <div style={{ padding: "16px" }}>
-        <button onClick={toggleTheme}>Toggle (currently: {theme})</button>
+      <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+        <button
+          onClick={toggleTheme}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-slate-700 text-white hover:bg-slate-600 transition-all shadow-lg"
+        >
+          Toggle (currently: {theme})
+        </button>
         <Card />
       </div>
     </ThemeContext.Provider>
   );
 }`,
-    fixedCode: `const ThemeContext = React.createContext("light");
+    fixedCode: `const ThemeContext = createContext("light");
 
 function Card() {
-  const theme = React.useContext(ThemeContext);
+  const theme = useContext(ThemeContext);
   return (
     <div
-      style={{
-        padding: "16px",
-        background: theme === "dark" ? "#1a1a2e" : "#f0f0f0",
-        color: theme === "dark" ? "#fff" : "#000",
-        borderRadius: "8px",
-        marginTop: "12px",
-      }}
+      className={\`p-6 rounded-xl mt-6 shadow-sm border transition-all duration-300 \${theme === "dark" ? "bg-slate-900 text-white border-slate-700" : "bg-[#1a1a1a] text-neutral-200 border-neutral-700"}\`}
     >
-      <p>
-        Current Theme: <strong id="theme-label">{theme}</strong>
+      <p className="text-lg font-medium">
+        Current Theme: <strong id="theme-label" className="font-bold underline text-xl">{theme}</strong>
       </p>
     </div>
   );
 }
 
 function App() {
-  const [theme, setTheme] = React.useState("light");
+  const [theme, setTheme] = useState("light");
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -432,8 +491,13 @@ function App() {
 
   return (
     <ThemeContext.Provider value={theme}>
-      <div style={{ padding: "16px" }}>
-        <button onClick={toggleTheme}>Toggle (currently: {theme})</button>
+      <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+        <button
+          onClick={toggleTheme}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-slate-700 text-white hover:bg-slate-600 transition-all shadow-lg"
+        >
+          Toggle (currently: {theme})
+        </button>
         <Card />
       </div>
     </ThemeContext.Provider>
@@ -442,18 +506,15 @@ function App() {
     tests: [
       {
         label: "Provider has a value prop",
-        check: (code) =>
-          code.includes("Provider value=") || code.includes("Provider\n  value="),
+        check: (code) => code.includes("Provider value=") || code.includes("Provider\n  value="),
       },
       {
         label: "Label shows the initial theme",
-        check: (code) =>
-          code.includes("ThemeContext") && code.includes("useContext"),
+        check: (code) => code.includes("ThemeContext") && code.includes("useContext"),
       },
       {
         label: "Toggling updates the deep label",
-        check: (code) =>
-          code.includes("value={theme}") && code.includes("setTheme"),
+        check: (code) => code.includes("value={theme}") && code.includes("setTheme"),
       },
     ],
   },
@@ -470,12 +531,12 @@ function App() {
     description:
       "An object declared inside the component is re-created on every render and placed in useEffect's dependency array. Since it's a new reference each time, React re-runs the effect endlessly. Remove the object from the deps array to fix it.",
     buggyCode: `function App() {
-  const [users, setUsers] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const options = { method: "GET" };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setLoading(true);
     setTimeout(() => {
       setUsers([
@@ -487,24 +548,35 @@ function App() {
     }, 600);
   }, [options]);
 
-  if (loading) return <p style={{ padding: "16px" }}>Loading users...</p>;
+  if (loading) return <p className="text-lg text-neutral-400 italic p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">Loading users...</p>;
 
   return (
-    <div style={{ padding: "16px" }}>
-      <h3>Team</h3>
-      {users.map((u) => (
-        <div key={u.id} style={{ padding: "8px 0", borderBottom: "1px solid #333" }}>
-          <strong>{u.name}</strong> — {u.role}
-        </div>
-      ))}
+    <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+      <h3 className="text-2xl font-semibold mb-6 tracking-tight text-neutral-100">Team</h3>
+      <div className="space-y-4">
+        {users.map((u) => (
+          <div
+            key={u.id}
+            className="flex items-center justify-between p-5 bg-[#1a1a1a] rounded-lg border border-neutral-800 hover:border-neutral-600 transition-colors shadow-sm"
+          >
+            <div>
+              <span className="text-lg font-semibold text-neutral-100">{u.name}</span>
+              <span className="mx-2 text-neutral-600">—</span>
+              <span className="text-md font-medium text-blue-400 bg-blue-950/30 px-3 py-1 rounded-full border border-blue-800">
+                {u.role}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }`,
     fixedCode: `function App() {
-  const [users, setUsers] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setLoading(true);
     setTimeout(() => {
       setUsers([
@@ -516,26 +588,34 @@ function App() {
     }, 600);
   }, []);
 
-  if (loading) return <p style={{ padding: "16px" }}>Loading users...</p>;
+  if (loading) return <p className="text-lg text-neutral-400 italic p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">Loading users...</p>;
 
   return (
-    <div style={{ padding: "16px" }}>
-      <h3>Team</h3>
-      {users.map((u) => (
-        <div key={u.id} style={{ padding: "8px 0", borderBottom: "1px solid #333" }}>
-          <strong>{u.name}</strong> — {u.role}
-        </div>
-      ))}
+    <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+      <h3 className="text-2xl font-semibold mb-6 tracking-tight text-neutral-100">Team</h3>
+      <div className="space-y-4">
+        {users.map((u) => (
+          <div
+            key={u.id}
+            className="flex items-center justify-between p-5 bg-[#1a1a1a] rounded-lg border border-neutral-800 hover:border-neutral-600 transition-colors shadow-sm"
+          >
+            <div>
+              <span className="text-lg font-semibold text-neutral-100">{u.name}</span>
+              <span className="mx-2 text-neutral-600">—</span>
+              <span className="text-md font-medium text-blue-400 bg-blue-950/30 px-3 py-1 rounded-full border border-blue-800">
+                {u.role}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }`,
     tests: [
       {
         label: "useEffect has an empty dependency array",
-        check: (code) =>
-          code.includes("}, [])") ||
-          code.includes("},\n  [])") ||
-          code.includes("},\n[])"),
+        check: (code) => code.includes("}, [])") || code.includes("},\n  [])") || code.includes("},\n[])"),
       },
       {
         label: "options object is not in the dependency array",
@@ -543,9 +623,7 @@ function App() {
       },
       {
         label: "Component only fetches data once on mount",
-        check: (code) =>
-          (code.includes("}, [])") || code.includes("}, [ ])")) &&
-          !code.includes("[options]"),
+        check: (code) => (code.includes("}, [])") || code.includes("}, [ ])")) && !code.includes("[options]"),
       },
     ],
   },
@@ -562,10 +640,10 @@ function App() {
     description:
       "setInterval is started inside useEffect but its ID is never stored and clearInterval is never called on cleanup. Add a return () => clearInterval(id) to fix the memory leak.",
     buggyCode: `function App() {
-  const [seconds, setSeconds] = React.useState(0);
-  const [running, setRunning] = React.useState(false);
+  const [seconds, setSeconds] = useState(0);
+  const [running, setRunning] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (running) {
       setInterval(() => {
         setSeconds((s) => s + 1);
@@ -583,22 +661,32 @@ function App() {
   const ss = String(seconds % 60).padStart(2, "0");
 
   return (
-    <div style={{ padding: "16px", textAlign: "center" }}>
-      <h1 style={{ fontSize: "48px", fontFamily: "monospace" }}>
+    <div className="p-8 text-center bg-[#141414] border border-neutral-800 rounded-2xl shadow-sm">
+      <h1 className="text-8xl font-extrabold tracking-tighter text-neutral-100 font-mono mb-8">
         {mm}:{ss}
       </h1>
-      <button onClick={toggle} style={{ marginRight: "8px" }}>
-        {running ? "Pause" : "Start"}
-      </button>
-      <button onClick={reset}>Reset</button>
+      <div className="flex gap-4 justify-center">
+        <button
+          onClick={toggle}
+          className={\`px-6 py-3 text-lg font-semibold rounded-xl transition-all shadow-lg \${running ? "bg-amber-600 text-white hover:bg-amber-700" : "bg-slate-700 text-white hover:bg-slate-600"}\`}
+        >
+          {running ? "Pause" : "Start"}
+        </button>
+        <button
+          onClick={reset}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-neutral-800 text-neutral-200 hover:bg-neutral-700 transition-all"
+        >
+          Reset
+        </button>
+      </div>
     </div>
   );
 }`,
     fixedCode: `function App() {
-  const [seconds, setSeconds] = React.useState(0);
-  const [running, setRunning] = React.useState(false);
+  const [seconds, setSeconds] = useState(0);
+  const [running, setRunning] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (running) {
       const id = setInterval(() => {
         setSeconds((s) => s + 1);
@@ -617,27 +705,35 @@ function App() {
   const ss = String(seconds % 60).padStart(2, "0");
 
   return (
-    <div style={{ padding: "16px", textAlign: "center" }}>
-      <h1 style={{ fontSize: "48px", fontFamily: "monospace" }}>
+    <div className="p-8 text-center bg-[#141414] border border-neutral-800 rounded-2xl shadow-sm">
+      <h1 className="text-8xl font-extrabold tracking-tighter text-neutral-100 font-mono mb-8">
         {mm}:{ss}
       </h1>
-      <button onClick={toggle} style={{ marginRight: "8px" }}>
-        {running ? "Pause" : "Start"}
-      </button>
-      <button onClick={reset}>Reset</button>
+      <div className="flex gap-4 justify-center">
+        <button
+          onClick={toggle}
+          className={\`px-6 py-3 text-lg font-semibold rounded-xl transition-all shadow-lg \${running ? "bg-amber-600 text-white hover:bg-amber-700" : "bg-slate-700 text-white hover:bg-slate-600"}\`}
+        >
+          {running ? "Pause" : "Start"}
+        </button>
+        <button
+          onClick={reset}
+          className="px-6 py-3 text-lg font-semibold rounded-xl bg-neutral-800 text-neutral-200 hover:bg-neutral-700 transition-all"
+        >
+          Reset
+        </button>
+      </div>
     </div>
   );
 }`,
     tests: [
       {
         label: "setInterval result is stored in a variable",
-        check: (code) =>
-          code.includes("= setInterval") || code.includes("=setInterval"),
+        check: (code) => code.includes("= setInterval") || code.includes("=setInterval"),
       },
       {
         label: "useEffect returns a cleanup function",
-        check: (code) =>
-          code.includes("return () =>") || code.includes("return function"),
+        check: (code) => code.includes("return () =>") || code.includes("return function"),
       },
       {
         label: "clearInterval is called in the cleanup",
@@ -658,17 +754,26 @@ function App() {
     description:
       "Both effects run concurrently. The slower response overwrites the faster one. Use a cancelled flag (or AbortController) to discard stale responses after the component re-renders with a new selectedId.",
     buggyCode: `const POSTS = {
-  1: { title: "Next.js 14 Features", body: "App Router, Server Actions, and more come to Next.js 14." },
-  2: { title: "React Server Components", body: "A new paradigm for server-side rendering in React." },
-  3: { title: "TypeScript Best Practices", body: "Advanced patterns for safer, more expressive code." },
+  1: {
+    title: "Next.js 14 Features",
+    body: "App Router, Server Actions, and more come to Next.js 14.",
+  },
+  2: {
+    title: "React Server Components",
+    body: "A new paradigm for server-side rendering in React.",
+  },
+  3: {
+    title: "TypeScript Best Practices",
+    body: "Advanced patterns for safer, more expressive code.",
+  },
 };
 
 function App() {
-  const [selectedId, setSelectedId] = React.useState(1);
-  const [post, setPost] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
+  const [selectedId, setSelectedId] = useState(1);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setLoading(true);
     setPost(null);
 
@@ -679,40 +784,49 @@ function App() {
   }, [selectedId]);
 
   return (
-    <div style={{ padding: "16px" }}>
-      <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+    <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+      <div className="flex gap-3 mb-6 border-b border-neutral-800 pb-4">
         {[1, 2, 3].map((id) => (
           <button
             key={id}
             onClick={() => setSelectedId(id)}
-            style={{ fontWeight: selectedId === id ? "bold" : "normal" }}
+            className={\`px-5 py-2.5 text-md font-semibold rounded-full transition-all \${selectedId === id ? "bg-violet-600 text-white shadow-md shadow-violet-500/20" : "text-violet-400 bg-violet-950/30 hover:bg-violet-950/40"}\`}
           >
             Post {id}
           </button>
         ))}
       </div>
-      {loading && <p>Loading...</p>}
+      {loading && <p className="text-lg text-neutral-400 italic">Loading...</p>}
       {post && (
-        <div>
-          <h3>{post.title}</h3>
-          <p style={{ color: "#94a3b8" }}>{post.body}</p>
+        <div className="space-y-4">
+          <h3 className="text-2xl font-bold tracking-tight text-neutral-100">{post.title}</h3>
+          <p className="text-lg text-neutral-300 leading-relaxed">{post.body}</p>
         </div>
       )}
     </div>
   );
 }`,
     fixedCode: `const POSTS = {
-  1: { title: "Next.js 14 Features", body: "App Router, Server Actions, and more come to Next.js 14." },
-  2: { title: "React Server Components", body: "A new paradigm for server-side rendering in React." },
-  3: { title: "TypeScript Best Practices", body: "Advanced patterns for safer, more expressive code." },
+  1: {
+    title: "Next.js 14 Features",
+    body: "App Router, Server Actions, and more come to Next.js 14.",
+  },
+  2: {
+    title: "React Server Components",
+    body: "A new paradigm for server-side rendering in React.",
+  },
+  3: {
+    title: "TypeScript Best Practices",
+    body: "Advanced patterns for safer, more expressive code.",
+  },
 };
 
 function App() {
-  const [selectedId, setSelectedId] = React.useState(1);
-  const [post, setPost] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
+  const [selectedId, setSelectedId] = useState(1);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let cancelled = false;
     setLoading(true);
     setPost(null);
@@ -730,23 +844,23 @@ function App() {
   }, [selectedId]);
 
   return (
-    <div style={{ padding: "16px" }}>
-      <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+    <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+      <div className="flex gap-3 mb-6 border-b border-neutral-800 pb-4">
         {[1, 2, 3].map((id) => (
           <button
             key={id}
             onClick={() => setSelectedId(id)}
-            style={{ fontWeight: selectedId === id ? "bold" : "normal" }}
+            className={\`px-5 py-2.5 text-md font-semibold rounded-full transition-all \${selectedId === id ? "bg-violet-600 text-white shadow-md shadow-violet-500/20" : "text-violet-400 bg-violet-950/30 hover:bg-violet-950/40"}\`}
           >
             Post {id}
           </button>
         ))}
       </div>
-      {loading && <p>Loading...</p>}
+      {loading && <p className="text-lg text-neutral-400 italic">Loading...</p>}
       {post && (
-        <div>
-          <h3>{post.title}</h3>
-          <p style={{ color: "#94a3b8" }}>{post.body}</p>
+        <div className="space-y-4">
+          <h3 className="text-2xl font-bold tracking-tight text-neutral-100">{post.title}</h3>
+          <p className="text-lg text-neutral-300 leading-relaxed">{post.body}</p>
         </div>
       )}
     </div>
@@ -756,24 +870,18 @@ function App() {
       {
         label: "A cancellation flag or AbortController is declared",
         check: (code) =>
-          code.includes("cancelled") ||
-          code.includes("AbortController") ||
-          code.includes("ignore"),
+          code.includes("cancelled") || code.includes("AbortController") || code.includes("ignore"),
       },
       {
         label: "State is only set when not cancelled",
         check: (code) =>
-          code.includes("!cancelled") ||
-          code.includes("!ignore") ||
-          code.includes("signal.aborted"),
+          code.includes("!cancelled") || code.includes("!ignore") || code.includes("signal.aborted"),
       },
       {
         label: "useEffect returns a cleanup that sets the flag",
         check: (code) =>
           code.includes("return () =>") &&
-          (code.includes("cancelled = true") ||
-            code.includes("ignore = true") ||
-            code.includes(".abort()")),
+          (code.includes("cancelled = true") || code.includes("ignore = true") || code.includes(".abort()")),
       },
     ],
   },
@@ -790,8 +898,8 @@ function App() {
     description:
       "useRef stores a mutable value that doesn't trigger re-renders. Using it for the count means React never re-paints the total. Switch count to useState so React knows to update the display.",
     buggyCode: `function App() {
-  const count = React.useRef(0);
-  const [lastClicked, setLastClicked] = React.useState(null);
+  const count = useRef(0);
+  const [lastClicked, setLastClicked] = useState(null);
 
   const handleClick = (label) => {
     count.current += 1;
@@ -799,17 +907,21 @@ function App() {
   };
 
   return (
-    <div style={{ padding: "16px", textAlign: "center" }}>
-      <h2>Click Counter</h2>
-      <p style={{ fontSize: "32px", margin: "12px 0" }}>
-        Total: <strong>{count.current}</strong>
+    <div className="p-8 text-center bg-[#141414] border border-neutral-800 rounded-2xl shadow-sm">
+      <h2 className="text-2xl font-semibold mb-2 tracking-tight text-neutral-100">Click Counter</h2>
+      <p className="text-2xl font-medium text-neutral-400 mb-6">
+        Total Clicks: <strong className="text-6xl font-extrabold tracking-tighter text-blue-400 ml-1.5">{count.current}</strong>
       </p>
-      <p style={{ color: "#94a3b8", marginBottom: "16px" }}>
+      <p className="text-lg font-medium text-neutral-400 mb-8 bg-[#1a1a1a] px-4 py-2 rounded-lg inline-block border border-neutral-800">
         Last clicked: {lastClicked ?? "None"}
       </p>
-      <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+      <div className="flex gap-4 justify-center">
         {["Alpha", "Beta", "Gamma"].map((label) => (
-          <button key={label} onClick={() => handleClick(label)}>
+          <button
+            key={label}
+            onClick={() => handleClick(label)}
+            className="px-6 py-3 text-lg font-semibold rounded-xl bg-slate-700 text-white hover:bg-slate-600 transition-all shadow-lg"
+          >
             {label}
           </button>
         ))}
@@ -818,8 +930,8 @@ function App() {
   );
 }`,
     fixedCode: `function App() {
-  const [count, setCount] = React.useState(0);
-  const [lastClicked, setLastClicked] = React.useState(null);
+  const [count, setCount] = useState(0);
+  const [lastClicked, setLastClicked] = useState(null);
 
   const handleClick = (label) => {
     setCount((c) => c + 1);
@@ -827,17 +939,21 @@ function App() {
   };
 
   return (
-    <div style={{ padding: "16px", textAlign: "center" }}>
-      <h2>Click Counter</h2>
-      <p style={{ fontSize: "32px", margin: "12px 0" }}>
-        Total: <strong>{count}</strong>
+    <div className="p-8 text-center bg-[#141414] border border-neutral-800 rounded-2xl shadow-sm">
+      <h2 className="text-2xl font-semibold mb-2 tracking-tight text-neutral-100">Click Counter</h2>
+      <p className="text-2xl font-medium text-neutral-400 mb-6">
+        Total Clicks: <strong className="text-6xl font-extrabold tracking-tighter text-blue-400 ml-1.5">{count}</strong>
       </p>
-      <p style={{ color: "#94a3b8", marginBottom: "16px" }}>
+      <p className="text-lg font-medium text-neutral-400 mb-8 bg-[#1a1a1a] px-4 py-2 rounded-lg inline-block border border-neutral-800">
         Last clicked: {lastClicked ?? "None"}
       </p>
-      <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+      <div className="flex gap-4 justify-center">
         {["Alpha", "Beta", "Gamma"].map((label) => (
-          <button key={label} onClick={() => handleClick(label)}>
+          <button
+            key={label}
+            onClick={() => handleClick(label)}
+            className="px-6 py-3 text-lg font-semibold rounded-xl bg-slate-700 text-white hover:bg-slate-600 transition-all shadow-lg"
+          >
             {label}
           </button>
         ))}
@@ -855,13 +971,11 @@ function App() {
       },
       {
         label: "count is updated via setState (no direct mutation)",
-        check: (code) =>
-          code.includes("setCount") && !code.includes("count.current"),
+        check: (code) => code.includes("setCount") && !code.includes("count.current"),
       },
       {
         label: "UI renders the reactive count value",
-        check: (code) =>
-          code.includes("{count}") && !code.includes("count.current"),
+        check: (code) => code.includes("{count}") && !code.includes("count.current"),
       },
     ],
   },
@@ -888,14 +1002,14 @@ function cartReducer(state, action) {
     case "ADD": {
       const existing = state.items.find((i) => i.id === action.product.id);
       if (existing) {
-        existing.qty += 1;  // direct mutation
-        return state;        // same reference — React ignores this
+        existing.qty += 1;
+        return state;
       }
-      state.items.push({ ...action.product, qty: 1 }); // mutation
+      state.items.push({ ...action.product, qty: 1 });
       return state;
     }
     case "REMOVE": {
-      state.items = state.items.filter((i) => i.id !== action.id); // mutation
+      state.items = state.items.filter((i) => i.id !== action.id);
       return state;
     }
     default:
@@ -904,27 +1018,52 @@ function cartReducer(state, action) {
 }
 
 function App() {
-  const [cart, dispatch] = React.useReducer(cartReducer, { items: [] });
+  const [cart, dispatch] = useReducer(cartReducer, { items: [] });
   const total = cart.items.reduce((s, i) => s + i.price * i.qty, 0);
 
   return (
-    <div style={{ padding: "16px" }}>
-      <h3>Products</h3>
-      {PRODUCTS.map((p) => (
-        <div key={p.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-          <span>{p.name} — {p.price} USD</span>
-          <button onClick={() => dispatch({ type: "ADD", product: p })}>Add</button>
-        </div>
-      ))}
-      <hr style={{ margin: "12px 0" }} />
-      <h3>Cart ({cart.items.reduce((s, i) => s + i.qty, 0)} items)</h3>
-      {cart.items.map((i) => (
-        <div key={i.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-          <span>{i.name} x{i.qty}</span>
-          <button onClick={() => dispatch({ type: "REMOVE", id: i.id })}>Remove</button>
-        </div>
-      ))}
-      <p style={{ marginTop: "8px" }}><strong>Total: {total} USD</strong></p>
+    <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+      <h3 className="text-2xl font-semibold mb-5 tracking-tight text-neutral-100">Products</h3>
+      <div className="space-y-3">
+        {PRODUCTS.map((p) => (
+          <div
+            key={p.id}
+            className="flex justify-between items-center p-4 bg-[#1a1a1a] rounded-lg border border-neutral-800 hover:border-neutral-600 transition-colors shadow-sm"
+          >
+            <span className="text-lg font-medium text-neutral-200">{p.name} — {p.price} USD</span>
+            <button
+              onClick={() => dispatch({ type: "ADD", product: p })}
+              className="px-5 py-2.5 text-sm font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-md shadow-blue-500/10"
+            >
+              Add
+            </button>
+          </div>
+        ))}
+      </div>
+      <hr className="my-8 border-t border-neutral-800" />
+      <h3 className="text-2xl font-semibold mb-5 tracking-tight text-neutral-100">
+        Cart ({cart.items.reduce((s, i) => s + i.qty, 0)} items)
+      </h3>
+      <div className="space-y-2.5">
+        {cart.items.map((i) => (
+          <div
+            key={i.id}
+            className="flex justify-between items-center p-4 bg-[#1a1a1a] rounded-lg border border-neutral-800"
+          >
+            <span className="text-lg font-medium text-neutral-200">{i.name} x{i.qty}</span>
+            <button
+              onClick={() => dispatch({ type: "REMOVE", id: i.id })}
+              className="px-5 py-2.5 text-sm font-semibold rounded-md bg-[#1a1a1a] text-red-400 border border-neutral-800 hover:bg-red-950/30 hover:border-red-800 transition-all shadow-sm"
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+      </div>
+      <p className="mt-8 p-5 bg-[#1a1a1a] rounded-xl border border-neutral-800 flex items-center justify-between text-2xl font-semibold text-neutral-100">
+        <span className="text-lg text-neutral-400">Total:</span>
+        <strong className="text-blue-400 text-3xl font-bold ml-3">{total} USD</strong>
+      </p>
     </div>
   );
 }`,
@@ -956,47 +1095,68 @@ function cartReducer(state, action) {
 }
 
 function App() {
-  const [cart, dispatch] = React.useReducer(cartReducer, { items: [] });
+  const [cart, dispatch] = useReducer(cartReducer, { items: [] });
   const total = cart.items.reduce((s, i) => s + i.price * i.qty, 0);
 
   return (
-    <div style={{ padding: "16px" }}>
-      <h3>Products</h3>
-      {PRODUCTS.map((p) => (
-        <div key={p.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-          <span>{p.name} — {p.price} USD</span>
-          <button onClick={() => dispatch({ type: "ADD", product: p })}>Add</button>
-        </div>
-      ))}
-      <hr style={{ margin: "12px 0" }} />
-      <h3>Cart ({cart.items.reduce((s, i) => s + i.qty, 0)} items)</h3>
-      {cart.items.map((i) => (
-        <div key={i.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-          <span>{i.name} x{i.qty}</span>
-          <button onClick={() => dispatch({ type: "REMOVE", id: i.id })}>Remove</button>
-        </div>
-      ))}
-      <p style={{ marginTop: "8px" }}><strong>Total: {total} USD</strong></p>
+    <div className="p-6 bg-[#141414] border border-neutral-800 rounded-xl shadow-sm">
+      <h3 className="text-2xl font-semibold mb-5 tracking-tight text-neutral-100">Products</h3>
+      <div className="space-y-3">
+        {PRODUCTS.map((p) => (
+          <div
+            key={p.id}
+            className="flex justify-between items-center p-4 bg-[#1a1a1a] rounded-lg border border-neutral-800 hover:border-neutral-600 transition-colors shadow-sm"
+          >
+            <span className="text-lg font-medium text-neutral-200">{p.name} — {p.price} USD</span>
+            <button
+              onClick={() => dispatch({ type: "ADD", product: p })}
+              className="px-5 py-2.5 text-sm font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-md shadow-blue-500/10"
+            >
+              Add
+            </button>
+          </div>
+        ))}
+      </div>
+      <hr className="my-8 border-t border-neutral-800" />
+      <h3 className="text-2xl font-semibold mb-5 tracking-tight text-neutral-100">
+        Cart ({cart.items.reduce((s, i) => s + i.qty, 0)} items)
+      </h3>
+      <div className="space-y-2.5">
+        {cart.items.map((i) => (
+          <div
+            key={i.id}
+            className="flex justify-between items-center p-4 bg-[#1a1a1a] rounded-lg border border-neutral-800"
+          >
+            <span className="text-lg font-medium text-neutral-200">{i.name} x{i.qty}</span>
+            <button
+              onClick={() => dispatch({ type: "REMOVE", id: i.id })}
+              className="px-5 py-2.5 text-sm font-semibold rounded-md bg-[#1a1a1a] text-red-400 border border-neutral-800 hover:bg-red-950/30 hover:border-red-800 transition-all shadow-sm"
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+      </div>
+      <p className="mt-8 p-5 bg-[#1a1a1a] rounded-xl border border-neutral-800 flex items-center justify-between text-2xl font-semibold text-neutral-100">
+        <span className="text-lg text-neutral-400">Total:</span>
+        <strong className="text-blue-400 text-3xl font-bold ml-3">{total} USD</strong>
+      </p>
     </div>
   );
 }`,
     tests: [
       {
         label: "Reducer returns a new state object using spread",
-        check: (code) =>
-          code.includes("return {") && code.includes("...state"),
+        check: (code) => code.includes("return {") && code.includes("...state"),
       },
       {
         label: "ADD updates existing items with map(), not mutation",
         check: (code) =>
-          code.includes(".map(") &&
-          (code.includes("qty + 1") || code.includes("qty: i.qty + 1")),
+          code.includes(".map(") && (code.includes("qty + 1") || code.includes("qty: i.qty + 1")),
       },
       {
         label: "REMOVE returns a new filtered array",
-        check: (code) =>
-          code.includes(".filter(") &&
-          (code.includes("return {") || code.includes("return {")),
+        check: (code) => code.includes(".filter(") && (code.includes("return {") || code.includes("return {")),
       },
     ],
   },

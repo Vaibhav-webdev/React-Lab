@@ -1,120 +1,154 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { RefreshCw } from "lucide-react";
+import { useMemo } from "react";
 
+// ── Iframe base styles ─────────────────────────────────────────────────────────
 const IFRAME_STYLES = `
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: #000000;
+    background: #0d0d0d;
     color: #e2e8f0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     padding: 20px;
+    min-height: 100vh;
   }
   .error-box {
     color: #f87171;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.4);
+    background: rgba(239,68,68,0.10);
+    border: 1px solid rgba(239,68,68,0.35);
     border-radius: 8px;
     padding: 16px;
-    font-size: 13px;
+    font-size: 12px;
     font-family: monospace;
     white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.6;
+  }
+  .idle-msg {
+    color: #334155;
+    text-align: center;
+    margin-top: 60px;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 2;
   }
 `;
 
-// 100% Safe Next.js Page hardcoded example
-const HARDCODED_EXAMPLE = `
-import React, { useState } from "react";
+/**
+ * Strips Next.js / module-specific syntax so raw JSX can execute in a
+ * vanilla Babel + React CDN iframe environment.
+ */
+function cleanCode(raw) {
+  if (!raw || !raw.trim()) return "";
+  let c = raw;
 
-export default function Home() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <div className="p-6 max-w-sm mx-auto bg-gray-900 rounded-xl shadow-md space-y-4 border border-gray-800 text-center">
-      <h1 className="text-2xl font-bold text-white">It is working! 🔥</h1>
-      <p className="text-gray-400 text-sm">
-        Agar ye UI dikh gaya, matlab Next.js ka manual compiler successfully set ho chuka hai.
-      </p>
-      
-      <div className="text-xl font-mono text-purple-400">
-        Counter: {count}
-      </div>
-      
-      <button
-        onClick={() => setCount(count + 1)}
-        className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow transition"
-      >
-        Increment +1
-      </button>
-    </div>
-  );
-}
-`;
-
-function cleanCode(code) {
-  let c = code.replace(/import\s+[\s\S]*?from\s+['"].*?['"];?/gi, "");
-  c = c.replace(/import\s+['"].*?['"];?/gi, "");
-  c = c.replace(/export\s+default\s+/gi, "");
-  c = c.replace(/export\s+/gi, "");
+  // 1. Remove `import ... from '...'`
+  c = c.replace(/import\s+[\s\S]*?from\s*['"`][^'"`]*['"`]\s*;?\n?/gi, "");
+  
+  // 2. Remove bare side-effect imports
+  c = c.replace(/import\s*['"`][^'"`]*['"`]\s*;?\n?/gi, "");
+  
+  // 3. Remove `export default`
+  c = c.replace(/export\s+default\s+/g, "");
+  
+  // 4. Remove named exports from line starts
+  c = c.replace(/^\s*export\s+(?!default)/gm, "");
+  
   return c.trim();
 }
 
+/**
+ * Builds a complete self-contained HTML document
+ */
 function buildSrcdoc(rawCode) {
-  const safeJsx = cleanCode(rawCode).replace(/<\/script>/gi, "<\\/script>");
+  const cleaned = cleanCode(rawCode);
+  const safe = cleaned.replace(/<\/script>/gi, "<\\/script>");
 
+  // FIX: Removed backslashes from ${IFRAME_STYLES} and ${safe} below
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>${IFRAME_STYLES}</style>
 </head>
 <body>
   <div id="root">
-    <!-- Jab tak CDNs load honge, user ko black screen pe ye dikhega -->
-    <div style="color: #444; text-align: center; margin-top: 40px; font-family: monospace;">Loading React Engine...</div>
+    <p class="idle-msg">⏳ Click <b>Check</b> to compile &amp; preview your code.</p>
   </div>
 
-  <!-- Raw JSX ko ek safe text container me daal diya -->
-  <script id="jsx-template" type="text/plain">
-${safeJsx}
-  </script>
+  <script id="jsx-src" type="text/plain">${safe}</script>
 
   <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const rootEl = document.getElementById('root');
-      const rawCode = document.getElementById('jsx-template').textContent;
+    window.addEventListener('DOMContentLoaded', function () {
+      var rootEl  = document.getElementById('root');
+      var rawCode = document.getElementById('jsx-src').textContent.trim();
+
+      if (!rawCode) return;
 
       try {
-        // 1. Explicit Babel Compilation (Agar syntax me galti hui to yahi catch ho jayega)
-        const transpiled = Babel.transform(rawCode, { presets: ['react'] }).code;
+        // Forcing Babel to use 'classic' runtime to prevent injected imports
+        var transpiled = Babel.transform(rawCode, {
+          presets: [
+            ['react', { runtime: 'classic' }]
+          ],
+          filename: 'component.jsx',
+        }).code;
 
-        // 2. Safe execution scope build kiya
-        const runner = new Function('React', 'ReactDOM', \`
-          const { useState, useEffect, useReducer, useRef, useMemo, useCallback } = React;
-          \${transpiled}
-          if (typeof Home !== 'undefined') return Home;
-          if (typeof Page !== 'undefined') return Page;
-          if (typeof App !== 'undefined') return App;
-          return null;
-        \`);
+        // Execute in a sandboxed scope
+        var runner = new Function(
+          'React',
+          'ReactDOM',
+          [
+            'const {',
+            '  useState, useEffect, useReducer, useRef, useMemo,',
+            '  useCallback, useContext, createContext, useId, useTransition,',
+            '  useLayoutEffect, useImperativeHandle, forwardRef,',
+            '} = React;',
+            '',
+            transpiled,
+            '',
+            'if (typeof Home      !== "undefined") return Home;',
+            'if (typeof Page      !== "undefined") return Page;',
+            'if (typeof App       !== "undefined") return App;',
+            'if (typeof Component !== "undefined") return Component;',
+            'if (typeof Counter   !== "undefined") return Counter;',
+            'if (typeof Timer     !== "undefined") return Timer;',
+            'if (typeof TodoApp   !== "undefined") return TodoApp;',
+            'if (typeof TodoList  !== "undefined") return TodoList;',
+            'if (typeof Form      !== "undefined") return Form;',
+            'if (typeof Card      !== "undefined") return Card;',
+            'if (typeof Modal     !== "undefined") return Modal;',
+            'if (typeof Navbar    !== "undefined") return Navbar;',
+            'if (typeof Dashboard !== "undefined") return Dashboard;',
+            'if (typeof Profile   !== "undefined") return Profile;',
+            'if (typeof Layout    !== "undefined") return Layout;',
+            '',
+            'return null;',
+          ].join('\\n')
+        );
 
-        const ComponentToRender = runner(React, ReactDOM);
+        var Comp = runner(React, ReactDOM);
 
-        if (ComponentToRender) {
-          const root = ReactDOM.createRoot(rootEl);
-          root.render(React.createElement(ComponentToRender));
+        // Render
+        if (Comp) {
+          var root = ReactDOM.createRoot(rootEl);
+          root.render(React.createElement(Comp));
         } else {
-          rootEl.innerHTML = '<div class="error-box"><b>Error:</b> Koi renderable component nahi mila. Function ka naam Home, Page ya App hona chahiye.</div>';
+          rootEl.innerHTML =
+            '<div class="error-box"><b>⚠ No renderable component found</b>\\n\\n' +
+            'Component function ka naam Home, Page, App, ya Component hona chahiye.\\n' +
+            '"export default function Home() {...}" pattern use karo.</div>';
         }
 
       } catch (err) {
-        // AB KABHI BHI SCREEN BLANK NAHI HOGI! Babel ka har error yahan UI pe dikhega
-        rootEl.innerHTML = '<div class="error-box"><b>Syntax / Babel Error:</b><br/>' + err.message + '</div>';
+        rootEl.innerHTML =
+          '<div class="error-box"><b>🐛 Compilation / Runtime Error:</b>\\n\\n' +
+          String(err.message || err) + '</div>';
       }
     });
   </script>
@@ -122,25 +156,21 @@ ${safeJsx}
 </html>`;
 }
 
-export default function PreviewPanel() {
-  const [srcdoc, setSrcdoc] = useState(() => buildSrcdoc(HARDCODED_EXAMPLE));
-  const [isRefreshing, setIsRefreshing] = useState(false);
+// ── PreviewPanel Component ─────────────────────────────────────────────────────
+export default function PreviewPanel({ code, refreshKey }) {
+  // Rebuild the srcdoc dynamically when editor code changes
+
+  const srcdoc = useMemo(() => buildSrcdoc(code ?? ""), [code]);
 
   return (
-    <div className="relative w-full h-full bg-black">
-      {isRefreshing && (
-        <div className="absolute top-2 right-2 z-10">
-          <RefreshCw size={12} className="text-purple-400 animate-spin" />
-        </div>
-      )}
-
+    <div className="relative w-full h-full bg-black overflow-hidden">
       <iframe
-        key={srcdoc}
+        key={refreshKey}
         srcDoc={srcdoc}
-        /* EK BOHOT BADA FIX: allow-same-origin add kiya taaki DOM .textContent read kar paye */
         sandbox="allow-scripts allow-same-origin"
         title="Component Preview"
-        className="w-full h-full border-0 bg-black"
+        className="w-full h-full border-0"
+        style={{ background: "#000" }}
       />
     </div>
   );
