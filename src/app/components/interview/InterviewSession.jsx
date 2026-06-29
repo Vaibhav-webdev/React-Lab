@@ -10,6 +10,9 @@ import {
   ChevronRight,
   Flag,
   AlignLeft,
+  Code,
+  LayoutTemplate,
+  CheckCircle2,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import TestPanel from "./TestPanel";
@@ -111,16 +114,21 @@ export default function InterviewSession({
 
   // ── CUSTOM RESIZE STATES & REF ──
   const containerRef = useRef(null);
-  const [leftWidth, setLeftWidth] = useState(50); // Horizontal split %
-  const [leftTopHeight, setLeftTopHeight] = useState(42); // Left vertical %
-  const [rightTopHeight, setRightTopHeight] = useState(55); // Right vertical %
-  const [isDragging, setIsDragging] = useState(false); // Controls iframe overlay shielding
+  const [leftWidth, setLeftWidth] = useState(50);
+  const [leftTopHeight, setLeftTopHeight] = useState(42);
+  const [rightTopHeight, setRightTopHeight] = useState(55);
+  const [isDragging, setIsDragging] = useState(false);
+  
+  // ── MOBILE TAB STATE ──
+  const [activeTab, setActiveTab] = useState("editor");
 
   useEffect(() => {
     setCode(question.buggyCode);
     setPreviewCode(question.buggyCode);
     setPreviewKey((k) => k + 1);
     setTestResults(undefined);
+    // Auto-switch to editor when question changes on mobile
+    setActiveTab("editor");
   }, [currentIdx, question.buggyCode]);
 
   const handleCheck = useCallback(() => {
@@ -146,89 +154,53 @@ export default function InterviewSession({
     onSkip();
   }, [question.id, recordResult, onSkip]);
 
-  // ── CUSTOM RESIZE HANDLERS ──
-  
-  // 1. Horizontal Resize (Left ↔ Right)
-  const handleHorizontalMouseDown = useCallback((e) => {
-    e.preventDefault();
+  // ── UNIVERSAL DRAG HANDLER (Mouse + Touch for iPad) ──
+  const createDragHandler = (type) => (e) => {
+    if (e.cancelable) e.preventDefault();
     setIsDragging(true);
+    const isTouch = e.type.startsWith("touch");
 
-    const handleMouseMove = (moveEvent) => {
+    const handleMove = (moveEvent) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const offsetX = moveEvent.clientX - rect.left;
-      const percentage = (offsetX / rect.width) * 100;
-      
-      // Min 20% and Max 80% boundary limits
-      if (percentage >= 20 && percentage <= 80) {
-        setLeftWidth(percentage);
+      const clientX = isTouch ? moveEvent.touches[0].clientX : moveEvent.clientX;
+      const clientY = isTouch ? moveEvent.touches[0].clientY : moveEvent.clientY;
+
+      if (type === "horizontal") {
+        const percentage = ((clientX - rect.left) / rect.width) * 100;
+        if (percentage >= 20 && percentage <= 80) setLeftWidth(percentage);
+      } else if (type === "leftVertical") {
+        const percentage = ((clientY - rect.top) / rect.height) * 100;
+        if (percentage >= 12 && percentage <= 85) setLeftTopHeight(percentage);
+      } else if (type === "rightVertical") {
+        const percentage = ((clientY - rect.top) / rect.height) * 100;
+        if (percentage >= 15 && percentage <= 85) setRightTopHeight(percentage);
       }
     };
 
-    const handleMouseUp = () => {
+    const handleEnd = () => {
       setIsDragging(false);
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  }, []);
-
-  // 2. Left Vertical Resize (Question Info ↕ Editor)
-  const handleLeftVerticalMouseDown = useCallback((e) => {
-    e.preventDefault();
-    setIsDragging(true);
-
-    const handleMouseMove = (moveEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const offsetY = moveEvent.clientY - rect.top;
-      const percentage = (offsetY / rect.height) * 100;
-
-      if (percentage >= 12 && percentage <= 85) {
-        setLeftTopHeight(percentage);
+      if (isTouch) {
+        document.removeEventListener("touchmove", handleMove);
+        document.removeEventListener("touchend", handleEnd);
+      } else {
+        document.removeEventListener("mousemove", handleMove);
+        document.removeEventListener("mouseup", handleEnd);
       }
     };
 
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  }, []);
-
-  // 3. Right Vertical Resize (Preview ↕ Tests)
-  const handleRightVerticalMouseDown = useCallback((e) => {
-    e.preventDefault();
-    setIsDragging(true);
-
-    const handleMouseMove = (moveEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const offsetY = moveEvent.clientY - rect.top;
-      const percentage = (offsetY / rect.height) * 100;
-
-      if (percentage >= 15 && percentage <= 85) {
-        setRightTopHeight(percentage);
-      }
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  }, []);
+    if (isTouch) {
+      document.addEventListener("touchmove", handleMove, { passive: false });
+      document.addEventListener("touchend", handleEnd);
+    } else {
+      document.addEventListener("mousemove", handleMove);
+      document.addEventListener("mouseup", handleEnd);
+    }
+  };
 
   return (
-    <div className="flex flex-col h-screen bg-[#050505] overflow-hidden select-none">
+    // 'h-[100dvh]' is crucial for mobile to avoid the browser URL bar hiding the bottom tabs
+    <div className="flex flex-col h-[100dvh] bg-[#050505] overflow-hidden select-none">
       {/* ── Top Bar ── */}
       <TopBar
         questions={questions}
@@ -246,20 +218,23 @@ export default function InterviewSession({
         ref={containerRef} 
         className="flex-1 min-h-0 relative flex flex-row overflow-hidden"
       >
-        {/* CRITICAL SHIELD OVERLAY: Prevents Iframe from stealing mouse moves during dragging */}
         {isDragging && (
           <div className="absolute inset-0 z-40 bg-transparent cursor-grabbing" />
         )}
 
-        {/* ─────────────────── LEFT COLUMN ─────────────────── */}
+        {/* ─────────────────── LEFT COLUMN (Question & Editor) ─────────────────── */}
         <div 
-          className="flex flex-col h-full min-w-0" 
-          style={{ width: `${leftWidth}%` }}
+          className={`flex-col h-full min-w-0 ${
+            activeTab === 'question' || activeTab === 'editor' ? 'flex w-full' : 'hidden'
+          } md:flex md:w-[var(--desktop-width)]`}
+          style={{ "--desktop-width": `${leftWidth}%` }}
         >
           {/* Question Info Panel */}
           <div 
-            className="border-b border-gray-800/60 overflow-hidden flex-shrink-0" 
-            style={{ height: `${leftTopHeight}%` }}
+            className={`border-b border-gray-800/60 overflow-hidden flex-shrink-0 ${
+              activeTab === 'question' ? 'flex h-full' : 'hidden'
+            } md:block md:h-[var(--desktop-left-top)]`}
+            style={{ "--desktop-left-top": `${leftTopHeight}%` }}
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -275,10 +250,11 @@ export default function InterviewSession({
             </AnimatePresence>
           </div>
 
-          {/* Vertical drag handle (Left Column) */}
+          {/* Vertical drag handle (Left Column - Desktop Only) */}
           <div
-            onMouseDown={handleLeftVerticalMouseDown}
-            className="h-[4px] w-full bg-slate-800/80 hover:bg-purple-600/60 active:bg-purple-500 transition-colors duration-150 cursor-row-resize flex items-center justify-center relative group z-50 flex-shrink-0"
+            onMouseDown={createDragHandler("leftVertical")}
+            onTouchStart={createDragHandler("leftVertical")}
+            className="hidden md:flex h-[4px] w-full bg-slate-800/80 hover:bg-purple-600/60 active:bg-purple-500 transition-colors duration-150 cursor-row-resize items-center justify-center relative group z-50 flex-shrink-0"
           >
             <div className="absolute z-50 rounded-full flex flex-row gap-[4px] px-2.5 py-[5px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#1a1a2e] border border-purple-600/40 shadow-xl">
               {[0, 1, 2, 3].map((i) => (
@@ -288,7 +264,9 @@ export default function InterviewSession({
           </div>
 
           {/* Code Editor Panel */}
-          <div className="flex-1 min-h-0 flex flex-col border-r border-slate-800/60">
+          <div className={`flex-1 min-h-0 flex-col border-r border-slate-800/60 ${
+            activeTab === 'editor' ? 'flex' : 'hidden'
+          } md:flex`}>
             <div className="flex items-center justify-between px-4 py-1.5 bg-black border-b border-slate-800/50 flex-shrink-0">
               <span className="text-slate-600 text-[10px] font-semibold tracking-widest uppercase">
                 Editor
@@ -303,10 +281,11 @@ export default function InterviewSession({
           </div>
         </div>
 
-        {/* ─────────────────── MAIN HORIZONTAL HANDLE ─────────────────── */}
+        {/* ─────────────────── MAIN HORIZONTAL HANDLE (Desktop Only) ─────────────────── */}
         <div
-          onMouseDown={handleHorizontalMouseDown}
-          className="w-[4px] h-full bg-slate-800/80 hover:bg-purple-600/60 active:bg-purple-500 transition-colors duration-150 cursor-col-resize flex items-center justify-center relative group z-50 flex-shrink-0"
+          onMouseDown={createDragHandler("horizontal")}
+          onTouchStart={createDragHandler("horizontal")}
+          className="hidden md:flex w-[4px] h-full bg-slate-800/80 hover:bg-purple-600/60 active:bg-purple-500 transition-colors duration-150 cursor-col-resize items-center justify-center relative group z-50 flex-shrink-0"
         >
           <div className="absolute z-50 rounded-full flex flex-col gap-[4px] py-2.5 px-[5px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#1a1a2e] border border-purple-600/40 shadow-xl">
             {[0, 1, 2, 3].map((i) => (
@@ -315,14 +294,18 @@ export default function InterviewSession({
           </div>
         </div>
 
-        {/* ─────────────────── RIGHT COLUMN ─────────────────── */}
+        {/* ─────────────────── RIGHT COLUMN (Preview & Tests) ─────────────────── */}
         <div 
-          className="flex flex-col h-full min-w-0 flex-1"
+          className={`flex-col h-full min-w-0 flex-1 ${
+            activeTab === 'preview' || activeTab === 'tests' ? 'flex w-full' : 'hidden'
+          } md:flex`}
         >
           {/* Preview Panel */}
           <div 
-            className="flex flex-col overflow-hidden flex-shrink-0" 
-            style={{ height: `${rightTopHeight}%` }}
+            className={`flex-col overflow-hidden flex-shrink-0 ${
+              activeTab === 'preview' ? 'flex h-full' : 'hidden'
+            } md:flex md:h-[var(--desktop-right-top)]`}
+            style={{ "--desktop-right-top": `${rightTopHeight}%` }}
           >
             <div className="flex items-center justify-between px-4 py-3 bg-[#141414] border-b border-slate-800/50 flex-shrink-0">
               <span className="text-[#a3a3a3] text-[10px] font-semibold tracking-widest uppercase">
@@ -340,10 +323,11 @@ export default function InterviewSession({
             </div>
           </div>
 
-          {/* Vertical drag handle (Right Column) */}
+          {/* Vertical drag handle (Right Column - Desktop Only) */}
           <div
-            onMouseDown={handleRightVerticalMouseDown}
-            className="h-[4px] w-full bg-slate-800/80 hover:bg-purple-600/60 active:bg-purple-500 transition-colors duration-150 cursor-row-resize flex items-center justify-center relative group z-50 flex-shrink-0"
+            onMouseDown={createDragHandler("rightVertical")}
+            onTouchStart={createDragHandler("rightVertical")}
+            className="hidden md:flex h-[4px] w-full bg-slate-800/80 hover:bg-purple-600/60 active:bg-purple-500 transition-colors duration-150 cursor-row-resize items-center justify-center relative group z-50 flex-shrink-0"
           >
             <div className="absolute z-50 rounded-full flex flex-row gap-[4px] px-2.5 py-[5px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#1a1a2e] border border-purple-600/40 shadow-xl">
               {[0, 1, 2, 3].map((i) => (
@@ -353,7 +337,9 @@ export default function InterviewSession({
           </div>
 
           {/* Test Panel */}
-          <div className="flex-1 min-h-0">
+          <div className={`flex-1 min-h-0 ${
+            activeTab === 'tests' ? 'block' : 'hidden'
+          } md:block`}>
             <TestPanel
               tests={question.tests}
               results={testResults}
@@ -364,7 +350,38 @@ export default function InterviewSession({
             />
           </div>
         </div>
+      </div>
 
+      {/* ─────────────────── MOBILE BOTTOM TAB BAR ─────────────────── */}
+      <div className="md:hidden flex items-center justify-around bg-[#080808] border-t border-slate-800/70 p-2 pb-safe z-30 flex-shrink-0">
+        <button 
+          onClick={() => setActiveTab('question')} 
+          className={`flex flex-col items-center gap-1 p-2 w-16 rounded-lg transition-colors ${activeTab === 'question' ? 'text-purple-400 bg-purple-500/15' : 'text-slate-500 hover:text-slate-300'}`}
+        >
+          <AlignLeft size={20} />
+          <span className="text-[10px] font-semibold">Task</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('editor')} 
+          className={`flex flex-col items-center gap-1 p-2 w-16 rounded-lg transition-colors ${activeTab === 'editor' ? 'text-purple-400 bg-purple-500/15' : 'text-slate-500 hover:text-slate-300'}`}
+        >
+          <Code size={20} />
+          <span className="text-[10px] font-semibold">Code</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('preview')} 
+          className={`flex flex-col items-center gap-1 p-2 w-16 rounded-lg transition-colors ${activeTab === 'preview' ? 'text-purple-400 bg-purple-500/15' : 'text-slate-500 hover:text-slate-300'}`}
+        >
+          <LayoutTemplate size={20} />
+          <span className="text-[10px] font-semibold">Preview</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('tests')} 
+          className={`flex flex-col items-center gap-1 p-2 w-16 rounded-lg transition-colors ${activeTab === 'tests' ? 'text-purple-400 bg-purple-500/15' : 'text-slate-500 hover:text-slate-300'}`}
+        >
+          <CheckCircle2 size={20} />
+          <span className="text-[10px] font-semibold">Tests</span>
+        </button>
       </div>
     </div>
   );
@@ -384,17 +401,18 @@ function TopBar({
   const isWarning = timeLeft <= 120 && timeLeft > 60;
   const isDanger = timeLeft <= 60;
   const currentQ = questions[currentIdx];
-  const diff = DIFFICULTY_STYLES[currentQ.difficulty];
+  const diff = DIFFICULTY_STYLES[currentQ.difficulty] || { bg: 'bg-gray-500/10', text: 'text-gray-400', border: 'border-gray-500/20', dot: 'bg-gray-400', label: 'Unknown' };
 
   return (
-    <div className="h-[52px] flex-shrink-0 flex items-center justify-between px-8 py-10 bg-[#0a0a0a] border-b border-slate-800/70 backdrop-blur-sm z-20">
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1.5">
+    // Fixed layout for mobile avoiding awkward heights causing overflow
+    <div className="h-[60px] md:h-[65px] flex-shrink-0 flex items-center justify-between px-4 md:px-8 bg-[#0a0a0a] border-b border-slate-800/70 backdrop-blur-sm z-20">
+      <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex items-center gap-1 md:gap-1.5 overflow-x-auto no-scrollbar">
           {questions.map((_, i) => (
             <button
               key={i}
               aria-label={`Question ${i + 1}`}
-              className={`w-7 h-7 rounded-full text-xs font-bold border transition-all duration-300
+              className={`min-w-6 w-6 h-6 md:w-7 md:h-7 flex items-center justify-center rounded-full text-[10px] md:text-xs font-bold border transition-all duration-300
                 ${
                   i === currentIdx
                     ? "bg-purple-600 border-purple-500 text-white scale-110 shadow-lg shadow-purple-900/50"
@@ -407,13 +425,13 @@ function TopBar({
             </button>
           ))}
         </div>
-        <span className="text-slate-500 text-sm hidden sm:block">
+        <span className="text-slate-500 text-[10px] md:text-sm hidden sm:block whitespace-nowrap">
           Challenge {currentIdx + 1} of {questions.length}
         </span>
       </div>
 
-      <div className="flex items-center gap-3">
-        <span className={`hidden sm:inline-flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-full border ${diff.bg} ${diff.text} ${diff.border}`}>
+      <div className="flex items-center gap-2 md:gap-3">
+        <span className={`hidden lg:inline-flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-full border ${diff.bg} ${diff.text} ${diff.border}`}>
           <span className={`w-1.5 h-1.5 rounded-full ${diff.dot}`} />
           {diff.label}
         </span>
@@ -422,18 +440,18 @@ function TopBar({
           {Math.floor(currentQ.timeLimit / 60)} min
         </span>
 
-        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono font-bold text-sm border transition-all duration-500 ${isDanger ? "bg-red-500/15 border-red-500/40 text-red-400 animate-pulse" : isWarning ? "bg-amber-500/15 border-amber-500/40 text-amber-400" : "bg-slate-800/60 border-slate-700/50 text-slate-200"}`}>
+        <div className={`flex items-center gap-1.5 px-2 py-1 md:px-3 md:py-1.5 rounded-lg font-mono font-bold text-xs md:text-sm border transition-all duration-500 ${isDanger ? "bg-red-500/15 border-red-500/40 text-red-400 animate-pulse" : isWarning ? "bg-amber-500/15 border-amber-500/40 text-amber-400" : "bg-slate-800/60 border-slate-700/50 text-slate-200"}`}>
           <Clock size={13} />
           {formatTime(timeLeft)}
         </div>
 
         {allPassed ? (
-          <button onClick={onNext} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition-all duration-150 active:scale-95">
-            {isLastQuestion ? (<><Flag size={12} /> Finish</>) : (<>Next <ChevronRight size={12} /></>)}
+          <button onClick={onNext} className="flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition-all duration-150 active:scale-95">
+            {isLastQuestion ? (<><Flag size={12} /> <span className="hidden sm:inline">Finish</span></>) : (<><span className="hidden sm:inline">Next</span> <ChevronRight size={12} /></>)}
           </button>
         ) : (
-          <button onClick={onSkip} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 border border-slate-700/50 hover:border-slate-600 transition-all duration-150 active:scale-95">
-            <SkipForward size={13} /> Skip
+          <button onClick={onSkip} className="flex items-center gap-1 px-2 md:px-3 py-1.5 text-[10px] md:text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 border border-slate-700/50 hover:border-slate-600 transition-all duration-150 active:scale-95">
+            <SkipForward size={13} /> <span className="hidden sm:inline">Skip</span>
           </button>
         )}
       </div>

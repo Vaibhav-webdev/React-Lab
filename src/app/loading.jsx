@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="flex min-h-[70vh] items-center justify-center bg-[#030303]">
+    <div className="flex min-h-screen items-center justify-center bg-[#030303]">
       <div className="relative flex h-24 w-24 items-center justify-center">
         {/* Outer glowing ring */}
         <div className="absolute inset-0 rounded-full border-y-2 border-purple-600 animate-[spin_2s_linear_infinite] drop-shadow-[0_0_10px_rgba(147,51,234,0.8)]"></div>

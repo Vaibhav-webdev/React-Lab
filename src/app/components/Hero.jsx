@@ -74,7 +74,9 @@ export default function Hero() {
                         variants={fadeInUp}
                         className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2"
                     >
-                        <button className="group relative inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-purple-600 text-white font-semibold shadow-lg shadow-purple-600/30 hover:bg-purple-500 active:scale-[0.98] transition-all duration-200 overflow-hidden">
+                        <button onClick={() => {
+                            router.push("/learn")
+                        }} className="group relative inline-flex cursor-pointer items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 transition-all duration-200 active:scale-[0.97] shadow-lg shadow-purple-900/40 overflow-hidden">
                             Start Learning
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
@@ -82,7 +84,7 @@ export default function Hero() {
 
                         <button onClick={() => {
                             router.push('/interview')
-                        }} className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800/80 font-semibold text-zinc-300 transition-all duration-200 active:scale-[0.98]">
+                        }} className="inline-flex cursor-pointer items-center justify-center px-6 py-3.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800/80 font-semibold text-zinc-300 transition-all duration-200 active:scale-[0.98]">
                             Try Mock Interview
                         </button>
                     </motion.div>

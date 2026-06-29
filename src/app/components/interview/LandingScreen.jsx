@@ -93,29 +93,32 @@ export default function LandingScreen({ onStart }) {
 
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.55, duration: 0.4 }}
-          className="flex flex-row items-center justify-center gap-3"
-        >
-          <button
-            onClick={onStart}
-            className="group relative inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white text-base overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 transition-all duration-200 active:scale-[0.97] shadow-lg shadow-purple-900/40"
-          >
-            Start the interview
-            <ChevronRight
-              size={18}
-              className="transition-transform duration-200 group-hover:translate-x-0.5"
-            />
-          </button>
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.55, duration: 0.4 }}
+  // Badlaav: sm:max-w-xl jisse badi screen par dono buttons ko khuli jagah mile
+  className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md sm:max-w-xl mx-auto px-4 sm:px-0"
+>
+  <button
+    onClick={onStart}
+    // sm:w-48 ya sm:w-auto use kar sakte hain flex-1 ke sath consistent width ke liye
+    className="group relative inline-flex items-center justify-center gap-1 w-full sm:w-52 px-6 lg:px-8 py-3.5 rounded-xl font-semibold text-white text-sm lg:text-base overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 transition-all duration-200 active:scale-[0.97] shadow-lg shadow-purple-900/40 white-space-nowrap"
+  >
+    <span className="truncate">Start the interview</span>
+    <ChevronRight
+      size={18}
+      className="transition-transform duration-200 group-hover:translate-x-0.5 shrink-0"
+    />
+  </button>
 
-          <a
-            href="/"
-            className="group relative inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-gray-400 text-base overflow-hidden bg-zinc-900 transition-all duration-200 active:scale-[0.97] shadow-lg shadow-gray-900/40"
-          >
-            <span><MoveLeft size={28} color="gray" /></span> Back to curriculum
-          </a>
-        </motion.div>
+  <a
+    href="/"
+    className="group relative inline-flex items-center justify-center gap-2 w-full sm:w-52 px-6 lg:px-8 py-3.5 rounded-xl font-semibold text-gray-400 text-sm lg:text-base overflow-hidden bg-zinc-900 transition-all duration-200 active:scale-[0.97] shadow-lg shadow-gray-900/40 white-space-nowrap"
+  >
+    <MoveLeft size={18} className="text-gray-400 shrink-0" /> 
+    <span className="truncate">Back to curriculum</span>
+  </a>
+</motion.div>
       </motion.div>
     </div>
   );

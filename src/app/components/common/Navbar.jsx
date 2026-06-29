@@ -57,8 +57,8 @@ const Navbar = () => {
           {/* Action Buttons (Desktop) */}
           <div className="hidden md:flex items-center space-x-4">
             <Link
-              href="/get-started"
-              className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 shadow-[0_0_15px_rgba(147,51,234,0.3)] hover:shadow-[0_0_20px_rgba(147,51,234,0.5)] outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0e12] focus-visible:ring-purple-500"
+              href="/learn"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 transition-all duration-200 active:scale-[0.97] shadow-lg shadow-purple-900/40 text-white px-5 py-2.5 rounded-md text-sm font-semibold shadow-[0_0_15px_rgba(147,51,234,0.3)] hover:shadow-[0_0_20px_rgba(147,51,234,0.5)] outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0e12] focus-visible:ring-purple-500"
             >
               Get Started
             </Link>
@@ -102,13 +102,7 @@ const Navbar = () => {
             ))}
             <li className="pt-4 flex flex-col gap-3 px-3">
               <Link
-                href="/signin"
-                className="w-full text-center border border-gray-700 text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded-md font-medium"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/get-started"
+                href="/learn"
                 className="w-full text-center bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md font-medium shadow-lg"
               >
                 Get Started

@@ -52,7 +52,9 @@ const CallToAction = () => {
           
           {/* Buttons Container */}
           <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
-            <button className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group">
+            <button onClick={() => {
+              router.push("/learn")
+            }} className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 transition-all duration-200 active:scale-[0.97] shadow-lg shadow-purple-900/40 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 group">
               Start Learning Now
               <svg 
                 className="w-4 h-4 transform transition-transform group-hover:translate-x-1" 
